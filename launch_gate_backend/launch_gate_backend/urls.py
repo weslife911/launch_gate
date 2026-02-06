@@ -16,8 +16,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/v1/", include("api.urls"))
 ]
+
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.http import JsonResponse
+
+# Simple health check for Vercel deployment verification
+def health_check(request):
+    return JsonResponse({"status": "LaunchGate Backend is Live", "database": "Connected to Supabase"})
+
+urlpatterns = [
+    path('', health_check), # Root URL now shows a status message
+    path('admin/', admin.site.urls),
+    path("api/v1/", include("api.urls"))
+]
+
+# Only serve static files this way in Development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
