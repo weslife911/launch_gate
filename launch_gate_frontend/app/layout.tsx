@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import TanstackQueryProvider from "@/providers/tanstackQueryProvider";
+import { useCheckAuthQuery } from "@/services/queries/authQueries";
+import LoadingScreen from "@/components/common/Loader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,9 +17,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+  const checkAuthQuery = useCheckAuthQuery();
+
+  if(checkAuthQuery.isPending) return LoadingScreen();
+
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <TanstackQueryProvider>
+          {children}
+        </TanstackQueryProvider>
+      </body>
     </html>
   );
 }

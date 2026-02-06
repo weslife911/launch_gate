@@ -54,3 +54,19 @@ class LoginSerializer(serializers.Serializer):
 
         data["user"] = user
         return data
+
+class NicheSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Niche
+        fields = ['id', 'name']
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    niches = NicheSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'username', 'full_name', 'phone_number',
+            'country', 'region', 'city', 'niches', 'referral_slug',
+            'account_status', 'date_joined', 'last_login'
+        ]

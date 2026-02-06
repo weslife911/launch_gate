@@ -1,8 +1,9 @@
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import CreateAPIView
-from users.serializers import SignupSerializer, LoginSerializer
+from rest_framework.views import APIView
+from users.serializers import SignupSerializer, LoginSerializer, UserDetailSerializer
 
 class UserSignupView(CreateAPIView):
     serializer_class = SignupSerializer
@@ -65,3 +66,15 @@ class LoginView(CreateAPIView):
                 "success": False,
                 "message": str(e)
             })
+
+class CheckAuthView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserDetailSerializer(user)
+        
+        return Response({
+            "success": True,
+            "user": serializer.data
+        })

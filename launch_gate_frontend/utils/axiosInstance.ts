@@ -1,3 +1,11 @@
-import axios from "axios";
+import axios from "axios"
 
-export const axiosInstance = axios.create();
+const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
+
+if(!API_URL) {
+    throw new Error("API URL is not defined in environment variables");
+}
+
+export const axiosInstance = axios.create({
+    baseURL: API_URL,
+});
