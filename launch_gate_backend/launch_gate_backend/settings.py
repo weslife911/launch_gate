@@ -94,6 +94,7 @@ DATABASES = {
     'default': dj_database_url.config(
         default=str(config("SUPABASE_DB_URL")),
         conn_max_age=0,
+        ssl_require=True,
     )
 }
 DATABASES['default']['OPTIONS'] = {
