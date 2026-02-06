@@ -97,9 +97,8 @@ DATABASES = {
         ssl_require=True,
     )
 }
-DATABASES['default']['OPTIONS'] = {
-    'disable_server_side_cursors': True,
-}
+
+DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
