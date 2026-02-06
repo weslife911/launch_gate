@@ -1,10 +1,19 @@
+"use client"
+
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { useAuthStore } from '@/store/useAuthStore'
 import { ReactNode } from 'react'
+import { redirect } from "next/navigation";
 
 function AdminDashboardLayout({ children }: {
     children: ReactNode
 }) {
+
+  const { isAuthenticated } = useAuthStore();
+
+  if(!isAuthenticated) redirect("/");
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">

@@ -13,6 +13,7 @@ import {
   MessageSquare,
   ChevronDown
 } from "lucide-react";
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,12 +25,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useLogoutMutation } from "@/services/mutations/authMutations";
 
 export default function Navbar() {
   // Replace this with your actual auth state from a hook like useAuth()
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const { isAuthenticated: isLoggedIn } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const logoutMutation = useLogoutMutation();
+  const router = useRouter();
 
   const navLinks = [
     { name: "How it Works", href: "/#how-it-works", guestOnly: true },
@@ -42,6 +48,18 @@ export default function Navbar() {
     if (link.guestOnly && isLoggedIn) return false;
     return true;
   });
+
+  console.log(isLoggedIn);
+
+  const handleLogout = async () => {
+
+        // 2. Clear local store and token
+        await logoutMutation.mutate(null, {
+            onSuccess: () => {
+                router.push("/");
+            }
+        });
+    }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
@@ -77,12 +95,12 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           {!isLoggedIn ? (
             <>
-              <Link href="/auth/login">
+              <Link href="/login">
                 <Button variant="ghost" className="font-bold text-slate-600">
                   Login
                 </Button>
               </Link>
-              <Link href="/auth/signup">
+              <Link href="/signup">
                 <Button className="bg-[#0052ff] hover:bg-[#0042cc] font-bold px-6 shadow-lg shadow-blue-100">
                   Get Started
                 </Button>
@@ -118,7 +136,7 @@ export default function Navbar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   className="text-red-600 focus:text-red-600 cursor-pointer py-2"
-                  onClick={() => setIsLoggedIn(false)}
+                  onClick={handleLogout}
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   <span className="font-bold">Sign Out</span>
@@ -164,9 +182,9 @@ export default function Navbar() {
               <Button 
                 variant="destructive" 
                 className="w-full h-12"
-                onClick={() => setIsLoggedIn(false)}
+                onClick={handleLogout}
               >
-                Sign Out
+                Logout
               </Button>
             )}
           </div>

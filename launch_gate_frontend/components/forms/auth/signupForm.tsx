@@ -1,229 +1,201 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { 
-  UserPlus, 
-  Mail, 
-  Lock, 
-  User, 
-  Briefcase, 
-  Rocket, 
-  Phone,
-  ArrowRight 
+  User, Mail, Phone, Globe, MapPin, 
+  Lock, LayoutGrid, AlertCircle, ArrowRight 
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSignupMutation } from "@/services/mutations/authMutations";
+import { Spinner } from "@/components/ui/spinner";
 
-// Yup Validation Schema for Fintech-level security
+// Validation Schema matching models.py requirements
 const signupSchema = Yup.object().shape({
-  fullName: Yup.string()
-    .min(2, "Full name must be at least 2 characters")
-    .required("Full name is required"),
-  email: Yup.string()
-    .email("Please enter a valid email address")
-    .required("Email is required"),
-  phone: Yup.string()
-    .matches(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number")
-    .required("Phone number is required"),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(/[A-Z]/, "Must contain at least one uppercase letter")
-    .matches(/[0-9]/, "Must contain at least one number")
-    .required("Password is required"),
-  memberInterest: Yup.string()
-    .required("Please select your area of interest"),
+  username: Yup.string().required("Username is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  full_name: Yup.string().optional(),
+  phone_number: Yup.string().optional(),
+  country: Yup.string().optional(),
+  region: Yup.string().optional(),
+  city: Yup.string().optional(),
+  niches: Yup.array().min(1, "Select at least one niche").required("Niche selection is required"),
+  password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
+  confirm_password: Yup.string()
+    .oneOf([Yup.ref('password')], 'Passwords must match')
+    .required('Confirm your password'),
 });
 
 export default function SignupPage() {
   const router = useRouter();
+  const signupMutation = useSignupMutation();
 
   const formik = useFormik({
     initialValues: {
-      fullName: "",
+      username: "",
       email: "",
-      phone: "",
+      full_name: "",
+      phone_number: "",
+      country: "",
+      region: "",
+      city: "",
+      niches: [], // Matches ManyToMany relationship
       password: "",
-      memberInterest: "",
+      confirm_password: "",
     },
     validationSchema: signupSchema,
     onSubmit: async (values) => {
-      console.log("Onboarding data:", values);
-      // Integration point for Django backend
-      // After success, router.push("/auth/verify");
+      
+      signupMutation.mutate(values, {
+        onSuccess: (data) => {
+          if(data.success) {
+            router.push("/dashboard")
+          }
+        }
+      });
     },
   });
 
+  // Reusable Error Component for Formik
+  const ErrorMsg = ({ name }: { name: keyof typeof formik.values }) => (
+    formik.touched[name] && formik.errors[name] ? (
+      <div className="flex items-center gap-1 text-xs text-destructive mt-1">
+        <AlertCircle className="w-3 h-3" />
+        <span>{formik.errors[name] as string}</span>
+      </div>
+    ) : null
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4 py-12">
-      {/* Brand Header */}
-      <div className="text-center mb-8">
-        <Link href="/" className="inline-flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-[#0052ff] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-            <Rocket className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-2xl font-bold text-slate-900 tracking-tight">
-            LaunchGate
-          </span>
-        </Link>
-      </div>
-
-      <Card className="w-full max-w-md border-slate-200 shadow-xl bg-white">
+      <Card className="w-full max-w-2xl border-slate-200 shadow-xl bg-white">
         <CardHeader className="text-center pb-4">
-          <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UserPlus className="w-7 h-7 text-[#0052ff]" />
-          </div>
-          <CardTitle className="text-2xl font-bold text-slate-900">
-            Create Account
-          </CardTitle>
-          <CardDescription className="text-slate-500">
-            Join the automated scaling infrastructure for Launchpad
-          </CardDescription>
+          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
+          <CardDescription>Join LaunchGate infrastructure</CardDescription>
         </CardHeader>
         
         <CardContent>
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
-            {/* Full Name */}
+          <form onSubmit={formik.handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* Username */}
             <div className="space-y-2">
-              <Label htmlFor="fullName" className="text-slate-700">Full Name</Label>
+              <Label htmlFor="username">Username</Label>
               <div className="relative">
-                <User className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                <Input
-                  id="fullName"
-                  placeholder="Enter your full name"
-                  className="pl-10 h-11 border-slate-200 focus:border-[#0052ff]"
-                  {...formik.getFieldProps("fullName")}
-                />
+                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="username" className="pl-10" {...formik.getFieldProps("username")} />
               </div>
-              {formik.touched.fullName && formik.errors.fullName && (
-                <p className="text-xs text-red-500 font-medium">{formik.errors.fullName}</p>
-              )}
+              <ErrorMsg name="username" />
             </div>
 
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-700">Email Address</Label>
+              <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@company.com"
-                  className="pl-10 h-11 border-slate-200"
-                  {...formik.getFieldProps("email")}
-                />
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="email" type="email" className="pl-10" {...formik.getFieldProps("email")} />
               </div>
-              {formik.touched.email && formik.errors.email && (
-                <p className="text-xs text-red-500 font-medium">{formik.errors.email}</p>
-              )}
+              <ErrorMsg name="email" />
             </div>
 
-            {/* Phone */}
+            {/* Full Name */}
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-slate-700">Phone Number</Label>
+              <Label htmlFor="full_name">Full Name</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                <Input
-                  id="phone"
-                  placeholder="+237 ..."
-                  className="pl-10 h-11 border-slate-200"
-                  {...formik.getFieldProps("phone")}
-                />
+                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="full_name" className="pl-10" {...formik.getFieldProps("full_name")} />
               </div>
-              {formik.touched.phone && formik.errors.phone && (
-                <p className="text-xs text-red-500 font-medium">{formik.errors.phone}</p>
-              )}
+              <ErrorMsg name="full_name" />
             </div>
 
-            {/* Member Interest Selection */}
+            {/* Phone Number */}
             <div className="space-y-2">
-              <Label className="text-slate-700">Member Interest</Label>
-              <Select
-                onValueChange={(value) => formik.setFieldValue("memberInterest", value)}
-              >
-                <SelectTrigger className="h-11 border-slate-200">
-                  <div className="flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-slate-400" />
-                    <SelectValue placeholder="Select your interest hub" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="nursing-health">Nursing / Health</SelectItem>
-                  <SelectItem value="tech">Technology</SelectItem>
-                  <SelectItem value="academia">Academia</SelectItem>
-                </SelectContent>
-              </Select>
-              {formik.touched.memberInterest && formik.errors.memberInterest && (
-                <p className="text-xs text-red-500 font-medium">{formik.errors.memberInterest}</p>
-              )}
+              <Label htmlFor="phone_number">Phone Number</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="phone_number" className="pl-10" {...formik.getFieldProps("phone_number")} />
+              </div>
+              <ErrorMsg name="phone_number" />
+            </div>
+
+            {/* Country */}
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="country" className="pl-10" {...formik.getFieldProps("country")} />
+              </div>
+              <ErrorMsg name="country" />
+            </div>
+
+            {/* City */}
+            <div className="space-y-2">
+              <Label htmlFor="city">City</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="city" className="pl-10" {...formik.getFieldProps("city")} />
+              </div>
+              <ErrorMsg name="city" />
+            </div>
+
+            {/* Niche Selection - Matching Exact NICHE_CHOICES */}
+            <div className="space-y-2 md:col-span-2">
+              <Label>Primary Niche Focus</Label>
+              <div className="relative">
+                <LayoutGrid className="absolute left-3 top-3 z-10 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Select onValueChange={(val) => formik.setFieldValue("niches", [val])}>
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder="Select your niche" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="writing">Writing, Cultural & Creative Arts</SelectItem>
+                    <SelectItem value="science">Science, Technology & Engineering</SelectItem>
+                    <SelectItem value="academia">Academia & Scholarships</SelectItem>
+                    <SelectItem value="health">Health, Medicine & Nursing</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <ErrorMsg name="niches" />
             </div>
 
             {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-700">Password</Label>
+              <Label htmlFor="password">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="pl-10 h-11 border-slate-200"
-                  {...formik.getFieldProps("password")}
-                />
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="password" type="password" className="pl-10" {...formik.getFieldProps("password")} />
               </div>
-              {formik.touched.password && formik.errors.password && (
-                <p className="text-xs text-red-500 font-medium">{formik.errors.password}</p>
-              )}
+              <ErrorMsg name="password" />
             </div>
 
-            {/* Submit */}
+            {/* Confirm Password */}
+            <div className="space-y-2">
+              <Label htmlFor="confirm_password">Confirm Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                <Input id="confirm_password" type="password" className="pl-10" {...formik.getFieldProps("confirm_password")} />
+              </div>
+              <ErrorMsg name="confirm_password" />
+            </div>
+
             <Button 
               type="submit" 
-              className="w-full h-11 bg-[#0052ff] hover:bg-[#0042cc] text-white font-semibold mt-6 transition-all"
-              disabled={formik.isSubmitting}
+              className="md:col-span-2 w-full h-11 bg-[#0052ff] hover:bg-[#0041cc] text-white"
+              disabled={signupMutation.isPending}
             >
-              {formik.isSubmitting ? "Creating Account..." : "Create Account"}
-              <ArrowRight className="ml-2 w-4 h-4" />
+              {signupMutation.isPending ? <Spinner /> : (
+                <>
+                  Create Account
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </>
+              )}
             </Button>
           </form>
-
-          {/* Login Link */}
-          <div className="mt-6 text-center text-sm">
-            <span className="text-slate-500 font-medium">Already have an account? </span>
-            <Link href="/login" className="text-[#0052ff] font-bold hover:underline">
-              Login
-            </Link>
-          </div>
-
-          {/* Trust Indicators */}
-          <div className="mt-8 pt-6 border-t border-slate-100 flex justify-center gap-6">
-            <div className="flex items-center gap-1.5 opacity-50">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Secure Data</span>
-            </div>
-            <div className="flex items-center gap-1.5 opacity-50">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Auto-Routing</span>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>

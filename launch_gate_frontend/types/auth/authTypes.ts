@@ -7,7 +7,13 @@ export type loginDetailsType = {
 
 export type loginReturnType = {
     success: boolean,
-    message: string
+    message?: string,
+    tokens: tokenTypes
+}
+
+export type tokenTypes = {
+    refresh: string,
+    access: string
 }
 
 export type checkAuthUserReturnType = {
@@ -24,9 +30,28 @@ export type checkAuthUserReturnType = {
     account_status: string
 }
 
+export type signupUserDetailsType = {
+    email: string,
+    username: string,
+    full_name: string,
+    phone_number: string,
+    country: string,
+    region: string,
+    city: string,
+    niches: string[],
+}
+
+export type signupUserResponseType = {
+    success: boolean,
+    message?: string,
+    tokens: tokenTypes
+}
+
 export type useAuthStoreType = {
     isAuthenticated: boolean,
     user: checkAuthUserReturnType | null,
-    checkAuth: () => Promise<checkAuthUserReturnType>
-    loginUser: (data: loginDetailsType) => Promise<loginReturnType>
+    checkAuth: () => Promise<checkAuthUserReturnType>,
+    signupUser: (data: signupUserDetailsType) => Promise<signupUserResponseType>,
+    loginUser: (data: loginDetailsType) => Promise<loginReturnType>,
+    logoutUser: () => Promise<void>
 }

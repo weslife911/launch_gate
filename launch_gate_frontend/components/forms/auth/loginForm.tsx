@@ -8,17 +8,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLoginMutation } from "@/services/mutations/authMutations";
+import { useRouter } from "next/navigation"
+import { Spinner } from "@/components/ui/spinner";
+import { loginReturnType } from "@/types/auth/authTypes";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().required("Required"),
+  password: Yup.string().required("Required").min(8, "Password must be at least 8 characters"),
 });
 
 export default function LoginForm() {
+
+  const loginMutation = useLoginMutation();
+  const router = useRouter();
+
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: loginSchema,
-    onSubmit: (values) => console.log("Login Attempt:", values),
+    onSubmit: async(values) => {
+      await loginMutation.mutate(values, {
+        onSuccess: (data: loginReturnType) => {
+          if(data.success) {
+            router.push("/dashboard");
+          }
+        }
+      });
+    },
   });
 
   return (
@@ -55,10 +71,15 @@ export default function LoginForm() {
                 <Lock className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
                 <Input {...formik.getFieldProps("password")} type="password" placeholder="••••••••" className="pl-10 h-11" />
               </div>
+              {formik.touched.password && formik.errors.password && <p className="text-xs text-red-500">{formik.errors.password}</p>}
             </div>
 
-            <Button type="submit" className="w-full h-11 bg-[#0052ff] hover:bg-[#0042cc]">
-              Sign In <LogIn className="ml-2 w-4 h-4" />
+            <Button disabled={loginMutation.isPending} type="submit" className="w-full h-11 bg-[#0052ff] hover:bg-[#0042cc]">
+              {
+                loginMutation.isPending ? <Spinner/> : <>
+                  Sign In <LogIn className="ml-2 w-4 h-4" />
+                </>
+              }
             </Button>
           </form>
           <div className="text-center text-sm text-slate-500">
