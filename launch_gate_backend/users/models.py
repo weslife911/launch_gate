@@ -25,6 +25,15 @@ class User(AbstractUser):
     country = models.CharField(max_length=100, blank=True)
     region = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100, blank=True)
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('user', 'User'),
+    ]
+    role = models.CharField(
+        max_length=10, 
+        choices=ROLE_CHOICES, 
+        default='user'
+    )
 
     niches = models.ManyToManyField(Niche, blank=True)
 

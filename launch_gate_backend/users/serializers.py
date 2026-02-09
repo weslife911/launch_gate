@@ -14,7 +14,8 @@ class SignupSerializer(serializers.ModelSerializer):
         fields = [
             'email', 'username', 'full_name', 'phone_number',
             'country', 'region', 'city', 'referral_slug',
-            'niche_focus', 'password', 'confirm_password'
+            'niche_focus', 'password', 'confirm_password',
+            'role'
         ]
 
     def validate(self, data):
@@ -68,5 +69,5 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'email', 'username', 'full_name', 'phone_number',
             'country', 'region', 'city', 'niches', 'referral_slug',
-            'account_status', 'date_joined', 'last_login'
+            'account_status', 'role', 'date_joined', 'last_login'
         ]

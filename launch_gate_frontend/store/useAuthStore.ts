@@ -1,109 +1,76 @@
 import { useAuthStoreType } from "@/types/auth/authTypes";
 import { axiosInstance } from "@/utils/axiosInstance";
-import { create } from "zustand"
+import { create } from "zustand";
+import Cookies from "js-cookie";
 
 export const useAuthStore = create<useAuthStoreType>((set) => ({
     isAuthenticated: false,
     user: null,
 
     checkAuth: async () => {
-        // Retrieve token safely from localStorage
-        const token = typeof window !== 'undefined' ? localStorage.getItem("JWT_TOKEN_LOCAL_STORAGE") : null;
+        // Read the token from cookies instead of localStorage
+        const token = Cookies.get("access_token");
         
-        // If no token exists, immediately reset state and stop the request
         if (!token) {
             set({ user: null, isAuthenticated: false });
-            return { success: false, message: "No token found" };
+            return { success: false, message: "No session found" };
         }
 
         try {
             const response = await axiosInstance.get("/check-auth/", {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+                headers: { "Authorization": `Bearer ${token}` }
             });
 
-            const responseData = response.data;
-
-            if (responseData.success) {
-                // Correctly set the nested user object from the response
-                set({ user: responseData.user, isAuthenticated: true });
-            } else {
-                set({ user: null, isAuthenticated: false });
+            if (response.data.success) {
+                set({ user: response.data.user, isAuthenticated: true });
             }
-
-            return responseData;
+            console.log(response.data);
+            return response.data;
         } catch (error) {
-            // Handle expired tokens or server errors by resetting auth state
             set({ user: null, isAuthenticated: false });
-            return { success: false, message: "Authentication failed" };
+            return { success: false };
         }
     },
 
     signupUser: async (data) => {
-    try {
-        const response = await axiosInstance.post("/signup/", data);
-        const responseData = response.data;
+        try {
+            const response = await axiosInstance.post("/signup/", data);
+            if (response.data.success) {
+                const { access, refresh } = response.data.tokens;
 
-        if (responseData.success) {
-            // 1. Extract the access token from the nested 'tokens' object
-            const accessToken = responseData.tokens.access;
-            const refreshToken = responseData.tokens.refresh;
+                // Set cookies with security attributes
+                Cookies.set("access_token", access, { expires: 1/288, secure: true, sameSite: 'strict' }); // 5 mins
+                Cookies.set("refresh_token", refresh, { expires: 50, secure: true, sameSite: 'strict' });
 
-            // 2. Save to localStorage using the key expected by checkAuth
-            if (typeof window !== 'undefined') {
-                localStorage.setItem("JWT_TOKEN_LOCAL_STORAGE", accessToken);
-                // Optionally save refresh token if you implement token rotation later
-                localStorage.setItem("JWT_REFRESH_TOKEN", refreshToken);
+                set({ isAuthenticated: true });
             }
-
-            // 3. Update the Zustand state
-            set({ isAuthenticated: true });
+            return response.data;
+        } catch (error) {
+            return { success: false, message: "Signup failed" };
         }
-        return responseData;
-    } catch (error) {
-        console.error("Signup error:", error);
-        return { success: false, message: "An error occurred during signup." };
-    }
-},
+    },
 
     loginUser: async (data) => {
         try {
-        const response = await axiosInstance.post("/login/", data);
-        const responseData = response.data;
+            const response = await axiosInstance.post("/login/", data);
+            if (response.data.success) {
+                const { access, refresh } = response.data.tokens;
 
-        if (responseData.success) {
-            // 1. Extract the access token from the nested 'tokens' object
-            const accessToken = responseData.tokens.access;
-            const refreshToken = responseData.tokens.refresh;
+                Cookies.set("access_token", access, { expires: 1/288, secure: true });
+                Cookies.set("refresh_token", refresh, { expires: 50, secure: true });
 
-            // 2. Save to localStorage using the key expected by checkAuth
-            if (typeof window !== 'undefined') {
-                localStorage.setItem("JWT_TOKEN_LOCAL_STORAGE", accessToken);
-                // Optionally save refresh token if you implement token rotation later
-                localStorage.setItem("JWT_REFRESH_TOKEN", refreshToken);
+                set({ isAuthenticated: true });
             }
-
-            // 3. Update the Zustand state
-            set({ isAuthenticated: true });
+            return response.data;
+        } catch (error) {
+            return { success: false };
         }
-        return responseData;
-    } catch (error) {
-        console.error("Signup error:", error);
-        return { success: false, message: "An error occurred during signup." };
-    }
     },
+
     logoutUser: async () => {
-    // 1. Remove both token keys from local storage
-    if (typeof window !== 'undefined') {
-        localStorage.removeItem("JWT_TOKEN_LOCAL_STORAGE"); // Access token
-        localStorage.removeItem("JWT_REFRESH_TOKEN");       // Refresh token
-    }
-    
-    // 2. Reset the global auth state
-    set({ 
-        isAuthenticated: false, 
-        user: null 
-    });
-},
+        // Clear all auth cookies
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        set({ isAuthenticated: false, user: null });
+    },
 }));
