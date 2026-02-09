@@ -25,9 +25,9 @@ export type checkAuthUserReturnType = {
     country: string,
     region: string,
     city: string,
-    niches: string[],
     referralSlug: string | null,
-    account_status: string
+    account_status: string,
+    referral_slug: string | null
 }
 
 export type signupUserDetailsType = {
@@ -38,7 +38,6 @@ export type signupUserDetailsType = {
     country: string,
     region: string,
     city: string,
-    niches: string[],
 }
 
 export type signupUserResponseType = {

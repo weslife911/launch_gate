@@ -25,7 +25,6 @@ const signupSchema = Yup.object().shape({
   country: Yup.string().optional(),
   region: Yup.string().optional(),
   city: Yup.string().optional(),
-  niches: Yup.array().min(1, "Select at least one niche").required("Niche selection is required"),
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
   confirm_password: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
@@ -45,7 +44,6 @@ export default function SignupPage() {
       country: "",
       region: "",
       city: "",
-      niches: [], // Matches ManyToMany relationship
       password: "",
       confirm_password: "",
     },
@@ -141,26 +139,6 @@ export default function SignupPage() {
                 <Input id="city" className="pl-10" {...formik.getFieldProps("city")} />
               </div>
               <ErrorMsg name="city" />
-            </div>
-
-            {/* Niche Selection - Matching Exact NICHE_CHOICES */}
-            <div className="space-y-2 md:col-span-2">
-              <Label>Primary Niche Focus</Label>
-              <div className="relative">
-                <LayoutGrid className="absolute left-3 top-3 z-10 h-4 w-4 text-muted-foreground pointer-events-none" />
-                <Select onValueChange={(val) => formik.setFieldValue("niches", [val])}>
-                  <SelectTrigger className="pl-10">
-                    <SelectValue placeholder="Select your niche" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="writing">Writing, Cultural & Creative Arts</SelectItem>
-                    <SelectItem value="science">Science, Technology & Engineering</SelectItem>
-                    <SelectItem value="academia">Academia & Scholarships</SelectItem>
-                    <SelectItem value="health">Health, Medicine & Nursing</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <ErrorMsg name="niches" />
             </div>
 
             {/* Password */}

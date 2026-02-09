@@ -1,19 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Manager
-
-class Niche(models.Model):
-    NICHE_CHOICES = [
-        ('writing', 'Writing, Cultural & Creative Arts'),
-        ('science', 'Science, Technology & Engineering'),
-        ('academia', 'Academia & Scholarships'),
-        ('health', 'Health, Medicine & Nursing'),
-    ]
-    name = models.CharField(max_length=100, unique=True, choices=NICHE_CHOICES)
-
-    def __str__(self) -> str:
-        return str(self.get_name_display())
-
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
@@ -25,6 +11,7 @@ class User(AbstractUser):
     country = models.CharField(max_length=100, blank=True)
     region = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100, blank=True)
+    
     ROLE_CHOICES = [
         ('admin', 'Admin'),
         ('user', 'User'),
@@ -35,23 +22,41 @@ class User(AbstractUser):
         default='user'
     )
 
-    niches = models.ManyToManyField(Niche, blank=True)
+    referral_count = models.PositiveIntegerField(default=0)
 
-    referral_slug = models.SlugField(unique=True, blank=True, null=True)
     STATUS_CHOICES = [
         ('pending_verification', 'Pending Verification'),
         ('active', 'Active'),
         ('suspended', 'Suspended'),
     ]
     account_status = models.CharField(
-        max_length=30, 
+        max_length=25, 
         choices=STATUS_CHOICES, 
         default='pending_verification'
     )
 
     USERNAME_FIELD = 'email'
-    
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.email
+
+# users/models.py
+from django.db import models
+from django.conf import settings
+
+class ClickLog(models.Model):
+    # Link the click to the user who owns the referral link
+    referrer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='clicks'
+    )
+    # The exact day and time the click occurred
+    clicked_at = models.DateTimeField(auto_now_add=True) 
+    
+    # Optional: Track where the click came from (e.g., 'whatsapp', 'twitter')
+    source = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"Click for {self.referrer.username} on {self.clicked_at.date()}"

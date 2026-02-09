@@ -24,7 +24,6 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
             if (response.data.success) {
                 set({ user: response.data.user, isAuthenticated: true });
             }
-            console.log(response.data);
             return response.data;
         } catch (error) {
             set({ user: null, isAuthenticated: false });

@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Niche, User
+from .models import User
 
-# Register your models here.
-admin.site.register(Niche)
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'referral_count', 'account_status', 'role')
+    search_fields = ('username', 'email', 'full_name')
+    list_filter = ('account_status', 'role')

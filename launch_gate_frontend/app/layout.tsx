@@ -4,6 +4,7 @@ import "./globals.css";
 import TanstackQueryProvider from "@/providers/tanstackQueryProvider";
 import LoadingProvider from "@/providers/loadingProvider";
 import Navbar from "@/components/common/Navbar";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,9 +25,12 @@ export default function RootLayout({
         <TanstackQueryProvider>
           <LoadingProvider>
             <Navbar/>
-            {children}
+            <main className="flex-1 overflow-y-auto bg-slate-50 p-6">
+              {children}
+            </main>
           </LoadingProvider>
         </TanstackQueryProvider>
+        <Toaster richColors position="top-center"/>
       </body>
     </html>
   );

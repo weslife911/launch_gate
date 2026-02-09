@@ -10,8 +10,12 @@ import {
   ShieldAlert
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function NotFound() {
+
+  const { isAuthenticated } = useAuthStore();
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-6 py-12">
       {/* Brand Header */}
@@ -49,10 +53,13 @@ export default function NotFound() {
             asChild
             className="w-full sm:w-auto h-12 px-8 bg-[#0052ff] hover:bg-[#0042cc] text-white font-bold shadow-lg shadow-blue-200"
           >
-            <Link href="/dashboard">
+            {isAuthenticated ? <Link href="/dashboard">
               <Home className="mr-2 h-4 w-4" />
               Go to Dashboard
-            </Link>
+            </Link> : <Link href="/">
+              <Home className="mr-2 h-4 w-4" />
+              Go to Home Page
+            </Link>}
           </Button>
           
           <Button 

@@ -1,73 +1,48 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+
 const data = [
-  { month: "Jan", members: 120, ambassadors: 15 },
-  { month: "Feb", members: 180, ambassadors: 22 },
-  { month: "Mar", members: 240, ambassadors: 28 },
-  { month: "Apr", members: 320, ambassadors: 35 },
-  { month: "May", members: 450, ambassadors: 48 },
-  { month: "Jun", members: 580, ambassadors: 62 },
+  { month: "Jan", clicks: 400, referrals: 60 },
+  { month: "Feb", clicks: 520, referrals: 85 },
+  { month: "Mar", clicks: 480, referrals: 72 },
+  { month: "Apr", clicks: 610, referrals: 110 },
+  { month: "May", clicks: 750, referrals: 142 },
 ];
-export function GrowthChart() {
+
+export function GrowthChart({ title = "Referral Analytics" }: { title?: string }) {
   return (
-    <Card className="border-border bg-card">
+    <Card className="border-border bg-card shadow-sm">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-foreground">
-          Growth Trends
-        </CardTitle>
+        <CardTitle className="text-lg font-semibold text-foreground">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-75 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis
-                dataKey="month"
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-              />
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+              <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "8px",
-                  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                }}
-                labelStyle={{ color: "hsl(var(--foreground))" }}
+                contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "12px" }}
               />
-              <Line
-                type="monotone"
-                dataKey="members"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2}
-                dot={{ fill: "hsl(var(--primary))", strokeWidth: 0, r: 4 }}
-                activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
-                name="Total Members"
+              <Legend verticalAlign="top" height={36} iconType="circle" />
+              <Line 
+                type="monotone" 
+                dataKey="clicks" 
+                stroke="#0052ff" 
+                strokeWidth={3} 
+                name="WhatsApp Clicks" 
+                dot={{ r: 4, fill: "#0052ff" }} 
               />
-              <Line
-                type="monotone"
-                dataKey="ambassadors"
-                stroke="hsl(var(--success))"
-                strokeWidth={2}
-                dot={{ fill: "hsl(var(--success))", strokeWidth: 0, r: 4 }}
-                activeDot={{ r: 6, fill: "hsl(var(--success))" }}
-                name="Ambassadors"
+              <Line 
+                type="monotone" 
+                dataKey="referrals" 
+                stroke="#10b981" 
+                strokeWidth={3} 
+                name="Actual Signups" 
+                dot={{ r: 4, fill: "#10b981" }} 
               />
             </LineChart>
           </ResponsiveContainer>
