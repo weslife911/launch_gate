@@ -34,7 +34,6 @@ export default function ContactForm() {
     initialValues: { name: "", email: "", subject: "", message: "" },
     validationSchema: contactSchema,
     onSubmit: async (values) => {
-      console.log("Form submitted", values);
       await new Promise(resolve => setTimeout(resolve, 1000));
       alert("Message sent!");
     },
@@ -128,7 +127,7 @@ export default function ContactForm() {
               </div>
               <div className="space-y-2">
                 <Label>Message</Label>
-                <Textarea {...formik.getFieldProps("message")} className="min-h-[140px]" placeholder="How can we help?" />
+                <Textarea {...formik.getFieldProps("message")} className="min-h-35" placeholder="How can we help?" />
               </div>
               <Button type="submit" className="w-full h-14 bg-[#0052ff] text-lg font-bold">
                 Send Message <Send className="ml-2 w-5 h-5" />

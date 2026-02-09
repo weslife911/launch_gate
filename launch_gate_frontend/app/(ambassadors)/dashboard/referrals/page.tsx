@@ -22,7 +22,7 @@ export default function ReferralsPage() {
   const { user } = useAuthStore();
 
   // Pulling base URL from env with a fallback for safety
-  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_BASE_URL || "https://launchgate.com";
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_BASE_URL || "https://launch-gate.vercel.app";
   
   // Construct the full link using the ambassador's unique slug
   const personalLink = `${baseUrl.replace(/\/$/, "")}/join/${user?.username}`;
@@ -46,7 +46,6 @@ export default function ReferralsPage() {
         });
         toast.success("Shared successfully!");
       } catch (error) {
-        console.log("Share failed", error);
       }
     } else {
       copyToClipboard();

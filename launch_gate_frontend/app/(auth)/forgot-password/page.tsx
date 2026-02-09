@@ -45,10 +45,6 @@ export default function VerifyEmailPage() {
     onSubmit: async (values) => {
       setServerError(null);
       try {
-        // Logic: Call your Django backend here to check if email exists
-        // const response = await api.post('/auth/check-email/', values);
-        
-        console.log("Checking email existence:", values.email);
         
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 1500));

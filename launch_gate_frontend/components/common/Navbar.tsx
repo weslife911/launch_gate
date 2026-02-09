@@ -49,8 +49,6 @@ export default function Navbar() {
     return true;
   });
 
-  console.log(isLoggedIn);
-
   const handleLogout = async () => {
 
         // 2. Clear local store and token
