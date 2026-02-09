@@ -1,10 +1,10 @@
 #!/bin/bash
 echo "BUILD START"
 
-# Use python3 to match the environment version
-python3 -m pip install -r requirements.txt
+# Install requirements using the bypass flag
+python3 -m pip install -r requirements.txt --break-system-packages
 
-# Ensure the output directory exists
+# Create the output directory explicitly
 mkdir -p staticfiles_build
 
 # Run collectstatic
