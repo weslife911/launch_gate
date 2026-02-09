@@ -1,9 +1,9 @@
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
-from launch_gate_backend.users.models import ClickLog, User
+from users.models import ClickLog, User
 from users.serializers import SignupSerializer, LoginSerializer, UserDetailSerializer
 from django.shortcuts import get_object_or_404
 from django.db.models import F
@@ -14,30 +14,18 @@ class UserSignupView(CreateAPIView):
     
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
-
         if not serializer.is_valid():
-            return Response({
-                "success": False,
-                "message": serializer.errors
-            })
+            return Response({"success": False, "message": serializer.errors})
         
         try:
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
-
             return Response({
                 "success": True,
-                "tokens": {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                }
+                "tokens": {"refresh": str(refresh), "access": str(refresh.access_token)}
             })
-
         except Exception as e:
-            return Response({
-                "success": False,
-                "message": str(e)
-            })
+            return Response({"success": False, "message": str(e)})
 
 class LoginView(CreateAPIView):
     serializer_class = LoginSerializer
@@ -45,62 +33,32 @@ class LoginView(CreateAPIView):
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
-
         if not serializer.is_valid():
-            return Response({
-                "success": False,
-                "message": serializer.errors
-            })
+            return Response({"success": False, "message": serializer.errors})
 
-        try:
-            user = serializer.validated_data['user']
-            refresh = RefreshToken.for_user(user)
-
-            return Response({
-                "success": True,
-                "tokens": {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                }
-            })
-
-        except Exception as e:
-            return Response({
-                "success": False,
-                "message": str(e)
-            })
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "success": True,
+            "tokens": {"refresh": str(refresh), "access": str(refresh.access_token)}
+        })
 
 class CheckAuthView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request):
-        user = request.user
-        serializer = UserDetailSerializer(user)
-        
-        return Response({
-            "success": True,
-            "user": serializer.data
-        })
+        serializer = UserDetailSerializer(request.user)
+        return Response({"success": True, "user": serializer.data})
 
 class TrackReferralClickView(APIView):
-    """
-    Updates the referral_count by 1 when a user clicks 
-    a WhatsApp link on an ambassador's page.
-    """
+    """Increments count and logs the timestamp for charts."""
     permission_classes = [AllowAny]
 
     def post(self, request, username):
-        # Locate ambassador by username from the referral link
         ambassador = get_object_or_404(User, username=username)
-        
-        # Atomic increment to ensure accuracy
         ambassador.referral_count = F('referral_count') + 1
         ambassador.save()
-        
-        return Response({
-            "success": True, 
-            "message": "Click tracked successfully."
-        })
+        ClickLog.objects.create(referrer=ambassador)
+        return Response({"success": True})
 
 
 class RecordClickView(APIView):
