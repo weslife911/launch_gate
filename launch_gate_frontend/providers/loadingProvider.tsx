@@ -1,7 +1,7 @@
 "use client"
 
 import LoadingScreen from "@/components/common/Loader";
-import { useLogoutMutation } from "@/services/mutations/authMutations";
+import { useLoginMutation, useLogoutMutation, useSignupMutation } from "@/services/mutations/authMutations";
 import { useCheckAuthQuery } from "@/services/queries/authQueries";
 import { ReactNode } from "react";
 
@@ -14,8 +14,10 @@ function LoadingProvider({
 
     const checkAuthQuery = useCheckAuthQuery();
     const logoutMutation = useLogoutMutation();
+    const loginMutation = useLoginMutation();
+    const singupMutation = useSignupMutation();
 
-    if(checkAuthQuery.isPending || logoutMutation.isPending) return LoadingScreen();
+    if(checkAuthQuery.isPending || loginMutation.isPending || singupMutation.isPending || logoutMutation.isPending) return LoadingScreen();
 
   return (
     <div>

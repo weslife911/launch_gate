@@ -1,23 +1,31 @@
 "use client";
 
-import { 
-  MessageCircle,
-  ExternalLink
-} from "lucide-react";
+import { MessageCircle, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { WHATSAPP_HUBS } from "@/constants/hubs";
+import { useTrackClickMutation } from "@/services/mutations/referralMutations";
+interface HubsSelectionClientProps {
+  username: string;
+}
 
-type Params = Promise<{ username: string }>;
+export default function HubsSelectionClient({ username }: HubsSelectionClientProps) {
+  // Initialize the mutation from your referral mutations file
+  const { mutate: trackClick } = useTrackClickMutation();
 
-export default async function HubsSelectionPage({ params }: { params: Params }) {
   const handleJoin = (link: string, title: string) => {
-    toast.success(`Redirecting to ${title}...`);
-    window.open(link, "_blank");
-  };
+    // 1. Record the click in the database via the mutation
+    trackClick(username);
 
-  const { username } = await params;
+    // 2. Provide visual feedback and redirect
+    toast.success(`Redirecting to ${title}...`);
+    
+    // Small delay to ensure the request is initiated before the page focus changes
+    setTimeout(() => {
+      window.open(link, "_blank");
+    }, 100);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 py-20 px-4">
@@ -41,7 +49,6 @@ export default async function HubsSelectionPage({ params }: { params: Params }) 
               className={`relative overflow-hidden group cursor-pointer border-2 border-transparent bg-white transition-all duration-300 shadow-sm ${hub.bg} ${hub.border} hover:shadow-xl hover:-translate-y-1`}
               onClick={() => handleJoin(hub.link, hub.title)}
             >
-              {/* Visual Indicator on Card Left */}
               <div className={`absolute left-0 top-0 bottom-0 w-1 ${hub.accent.replace('text', 'bg')}`} />
 
               <CardHeader className="pt-8 px-8">
