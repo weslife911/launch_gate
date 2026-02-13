@@ -75,3 +75,25 @@ class RecordClickView(APIView):
             return Response({"success": True})
         except User.DoesNotExist:
             return Response({"success": False, "message": "Invalid slug"}, status=404)
+
+class ReferralStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        stats = (
+            ClickLog.objects.filter(referrer=request.user)
+            .annotate(date=TruncDay('clicked_at'))
+            .values('date')
+            .annotate(clicks=Count('id'))
+            .order_by('date')
+        )
+        
+        formatted_stats = [
+            {
+                "date": item['date'].strftime('%Y-%m-%d'),
+                "clicks": item['clicks']
+            } 
+            for item in stats
+        ]
+        
+        return Response(formatted_stats)

@@ -17,4 +17,11 @@ export type useReferralStoreType = {
     isLoading: boolean;
     fetchReferralData: () => Promise<void>;
     trackClick: (username: string) => Promise<TrackClickReturnType>;
+    chartData: DailyStatsType[];
+    fetchChartData: () => Promise<void>;
 }
+
+export type DailyStatsType = {
+    date: string;
+    clicks: number;
+};

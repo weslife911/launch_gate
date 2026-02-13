@@ -7,6 +7,7 @@ export const useReferralStore = create<useReferralStoreType>((set) => ({
     referralCount: 0,
     clickLogs: [],
     isLoading: false,
+    chartData: [],
 
     fetchReferralData: async () => {
         const token = Cookies.get("access_token");
@@ -39,6 +40,20 @@ export const useReferralStore = create<useReferralStoreType>((set) => ({
             return response.data;
         } catch (error) {
             return { success: false, message: "Failed to track click" };
+        }
+    },
+
+    fetchChartData: async () => {
+        const token = Cookies.get("access_token");
+        if (!token) return;
+
+        try {
+            const response = await axiosInstance.get("/users/stats/", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            set({ chartData: response.data });
+        } catch (error) {
+            console.error("Failed to fetch chart data", error);
         }
     },
 }));

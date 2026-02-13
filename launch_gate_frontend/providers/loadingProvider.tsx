@@ -3,21 +3,29 @@
 import LoadingScreen from "@/components/common/Loader";
 import { useLoginMutation, useLogoutMutation, useSignupMutation } from "@/services/mutations/authMutations";
 import { useCheckAuthQuery } from "@/services/queries/authQueries";
+import { useReferralDataQuery } from "@/services/queries/referralQueries";
 import { ReactNode } from "react";
-
 
 function LoadingProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-
     const checkAuthQuery = useCheckAuthQuery();
+    const referralQuery = useReferralDataQuery(); // Added
     const logoutMutation = useLogoutMutation();
     const loginMutation = useLoginMutation();
-    const singupMutation = useSignupMutation();
+    const signupMutation = useSignupMutation();
 
-    if(checkAuthQuery.isPending || loginMutation.isPending || singupMutation.isPending || logoutMutation.isPending) return LoadingScreen();
+    // Combined pending states
+    const isGlobalPending = 
+      checkAuthQuery.isPending || 
+      referralQuery.isPending || 
+      loginMutation.isPending || 
+      signupMutation.isPending || 
+      logoutMutation.isPending;
+
+    if (isGlobalPending) return <LoadingScreen />;
 
   return (
     <div>
@@ -26,4 +34,4 @@ function LoadingProvider({
   )
 }
 
-export default LoadingProvider
+export default LoadingProvider;
