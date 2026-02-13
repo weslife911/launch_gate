@@ -4,10 +4,21 @@ import os
 from decouple import config
 import dj_database_url
 
+# Email Configuration
+EMAIL_BACKEND = config("EMAIL_BACKEND")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_USE_TLS = True
+
+# Using decouple to fetch credentials
+EMAIL_HOST_USER = config('ADMIN_EMAIL')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('ADMIN_EMAIL')
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config("SECRET_KEY")
-DEBUG = False  # Set to True locally if you need to see exact Python errors
+DEBUG = False
 
 ALLOWED_HOSTS = [".vercel.app", "127.0.0.1", "localhost"]
 
@@ -23,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "api",
     "users",
+    "referral",
+    "contact",
     "rest_framework",
     'rest_framework_simplejwt',
     'corsheaders',

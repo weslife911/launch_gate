@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useContactMutation } from "@/services/mutations/contactMutation";
+import { Spinner } from "@/components/ui/spinner";
 
 const contactSchema = Yup.object().shape({
   name: Yup.string().min(2, "Name is too short").required("Required"),
@@ -28,6 +30,7 @@ const contactSchema = Yup.object().shape({
 
 export default function ContactForm() {
   const { user } = useAuthStore();
+  const contactMutation = useContactMutation();
 
   const formik = useFormik({
     // Dynamically set initial values based on user presence
@@ -41,8 +44,7 @@ export default function ContactForm() {
     enableReinitialize: true, 
     validationSchema: contactSchema,
     onSubmit: async (values) => {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      alert("Message sent!");
+      await contactMutation.mutate(values);
     },
   });
 
@@ -69,7 +71,7 @@ export default function ContactForm() {
                     <Mail className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-slate-900">Email Us</h3>
-                  <p className="text-sm text-slate-500">support@launchgate.com</p>
+                  <p className="text-sm text-slate-500">mfonfuwesley@gmail.com</p>
                 </CardContent>
               </Card>
 
@@ -150,7 +152,7 @@ export default function ContactForm() {
                 <Label className="text-slate-700 font-semibold">Message</Label>
                 <Textarea 
                   {...formik.getFieldProps("message")} 
-                  className="min-h-[160px] bg-white border-slate-200 focus:ring-2 focus:ring-blue-500 rounded-xl resize-none" 
+                  className="min-h-40 bg-white border-slate-200 focus:ring-2 focus:ring-blue-500 rounded-xl resize-none" 
                   placeholder="Tell us more about your inquiry..." 
                 />
                 {formik.touched.message && formik.errors.message && (
@@ -160,10 +162,10 @@ export default function ContactForm() {
 
               <Button 
                 type="submit" 
-                disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting || contactMutation.isPending}
                 className="w-full h-16 bg-[#0052ff] hover:bg-blue-700 text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
               >
-                {formik.isSubmitting ? "Sending..." : "Send Message"} 
+                {formik.isSubmitting ? <Spinner/> : "Send Message"} 
                 <Send className="ml-2 w-5 h-5" />
               </Button>
             </form>
