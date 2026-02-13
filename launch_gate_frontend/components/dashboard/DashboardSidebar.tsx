@@ -15,8 +15,6 @@ import { toast } from "sonner";
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Referrals", url: "/dashboard/referrals", icon: Users },
-  { title: "WhatsApp Hubs", url: "/dashboard/hubs", icon: MessageCircle },
-  { title: "Promotion Kits", url: "/dashboard/kits", icon: Rocket },
 ];
 
 export function DashboardSidebar() {

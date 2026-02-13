@@ -1,18 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { 
   Mail, 
-  MessageSquare, 
   Send, 
   Rocket, 
   Globe, 
-  Phone,
   CheckCircle2,
   MapPin,
-  ArrowRight,
   ShieldCheck
 } from "lucide-react";
 
@@ -21,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const contactSchema = Yup.object().shape({
   name: Yup.string().min(2, "Name is too short").required("Required"),
@@ -30,8 +27,18 @@ const contactSchema = Yup.object().shape({
 });
 
 export default function ContactForm() {
+  const { user } = useAuthStore();
+
   const formik = useFormik({
-    initialValues: { name: "", email: "", subject: "", message: "" },
+    // Dynamically set initial values based on user presence
+    initialValues: { 
+      name: user?.full_name || "", 
+      email: user?.email || "", 
+      subject: "", 
+      message: "" 
+    },
+    // Allows form to update if user data loads late
+    enableReinitialize: true, 
     validationSchema: contactSchema,
     onSubmit: async (values) => {
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -41,111 +48,142 @@ export default function ContactForm() {
 
   return (
     <div className="min-h-screen bg-white selection:bg-blue-100">
-
-      <main className="max-w-7xl mx-auto px-6 py-16 md:py-24 grid lg:grid-cols-2 gap-16">
-        
-        {/* 2. Left Column: Information & Specific Icons */}
-        <div className="space-y-12">
-          <div className="space-y-6">
-            <h1 className="text-5xl font-bold text-slate-900 leading-[1.1]">
-              Get in touch with our <span className="text-[#0052ff]">Global Hub.</span>
-            </h1>
-            <p className="text-lg text-slate-500">
-              Whether you're an Ambassador or a Hub Lead, our automated support system routes your query to the right specialist instantly.
-            </p>
-          </div>
-
-          {/* Icon Grid: Mail, Phone, MapPin, Globe */}
-          <div className="grid sm:grid-cols-2 gap-8">
-            <div className="flex gap-4">
-              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
-                <Mail className="w-6 h-6 text-[#0052ff]" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900">Email</h4>
-                <p className="text-sm text-slate-500">support@launchgate.io</p>
-              </div>
+      <main className="max-w-7xl mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          
+          {/* Info Side */}
+          <div className="space-y-10">
+            <div className="space-y-4">
+              <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                Get in touch with the <span className="text-[#0052ff]">Experts</span>
+              </h1>
+              <p className="text-lg text-slate-500 max-w-lg">
+                Have a question about the Ambassador program or regional hubs? Our team is here to help you scale your impact.
+              </p>
             </div>
 
-            <div className="flex gap-4">
-              <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0">
-                <Phone className="w-6 h-6 text-slate-600" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900">Phone</h4>
-                <p className="text-sm text-slate-500">+1 (555) 000-0000</p>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Card className="border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6 space-y-3">
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0052ff]">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-slate-900">Email Us</h3>
+                  <p className="text-sm text-slate-500">support@launchgate.com</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6 space-y-3">
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0052ff]">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-slate-900">Visit Us</h3>
+                  <p className="text-sm text-slate-500">Bamenda, NorthWest Region, CM</p>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="flex gap-4">
-              <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0">
-                <MapPin className="w-6 h-6 text-slate-600" />
+            <div className="space-y-6 pt-6">
+              <div className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-[#0052ff] transition-colors">
+                  <Globe className="w-5 h-5 text-slate-400 group-hover:text-[#0052ff]" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Global Support</p>
+                  <p className="text-slate-900 font-semibold">Available 24/7 for Ambassadors</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-bold text-slate-900">Office</h4>
-                <p className="text-sm text-slate-500">Silicon Valley, CA</p>
+              <div className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-[#0052ff] transition-colors">
+                  <Rocket className="w-5 h-5 text-slate-400 group-hover:text-[#0052ff]" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Growth Assistance</p>
+                  <p className="text-slate-900 font-semibold">Scale your local community hub</p>
+                </div>
               </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
-                <Globe className="w-6 h-6 text-[#0052ff]" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900">Global Hubs</h4>
-                <p className="text-sm text-slate-500">18 Countries Active</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Secondary CTA with MessageSquare & ArrowRight */}
-          <div className="p-8 bg-slate-900 rounded-3xl text-white relative overflow-hidden group">
-            <div className="relative z-10 space-y-4">
-              <div className="flex items-center gap-3">
-                <MessageSquare className="w-6 h-6 text-blue-400" />
-                <h4 className="text-xl font-bold">Community Chat</h4>
-              </div>
-              <p className="text-slate-400 text-sm">Join our private Slack for Ambassadors to get real-time strategy updates.</p>
-              <Button variant="link" className="text-white p-0 h-auto font-bold group-hover:underline">
-                Join Community <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
             </div>
           </div>
-        </div>
 
-        {/* 3. Right Column: Form with Send & CheckCircle2 */}
-        <Card className="border-slate-200 shadow-2xl shadow-blue-500/5">
-          <CardContent className="p-8 space-y-6">
-            <form onSubmit={formik.handleSubmit} className="space-y-5">
+          {/* Form Side */}
+          <div className="bg-slate-50 rounded-3xl p-8 md:p-12 border border-slate-100">
+            <form onSubmit={formik.handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label>Full Name</Label>
-                <Input {...formik.getFieldProps("name")} className="h-12" placeholder="John Doe" />
+                <Label className="text-slate-700 font-semibold">Full Name</Label>
+                <Input 
+                  {...formik.getFieldProps("name")} 
+                  className="h-14 bg-white border-slate-200 focus:ring-2 focus:ring-blue-500 rounded-xl" 
+                  placeholder="John Doe" 
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <p className="text-xs text-red-500 font-medium ml-1">{formik.errors.name}</p>
+                )}
               </div>
+
               <div className="space-y-2">
-                <Label>Email</Label>
-                <Input {...formik.getFieldProps("email")} type="email" className="h-12" placeholder="john@example.com" />
+                <Label className="text-slate-700 font-semibold">Email Address</Label>
+                <Input 
+                  {...formik.getFieldProps("email")} 
+                  type="email" 
+                  className="h-14 bg-white border-slate-200 focus:ring-2 focus:ring-blue-500 rounded-xl" 
+                  placeholder="john@example.com" 
+                />
+                {formik.touched.email && formik.errors.email && (
+                  <p className="text-xs text-red-500 font-medium ml-1">{formik.errors.email}</p>
+                )}
               </div>
+
               <div className="space-y-2">
-                <Label>Message</Label>
-                <Textarea {...formik.getFieldProps("message")} className="min-h-35" placeholder="How can we help?" />
+                <Label className="text-slate-700 font-semibold">Subject</Label>
+                <Input 
+                  {...formik.getFieldProps("subject")} 
+                  className="h-14 bg-white border-slate-200 focus:ring-2 focus:ring-blue-500 rounded-xl" 
+                  placeholder="How can we help?" 
+                />
+                {formik.touched.subject && formik.errors.subject && (
+                  <p className="text-xs text-red-500 font-medium ml-1">{formik.errors.subject}</p>
+                )}
               </div>
-              <Button type="submit" className="w-full h-14 bg-[#0052ff] text-lg font-bold">
-                Send Message <Send className="ml-2 w-5 h-5" />
+
+              <div className="space-y-2">
+                <Label className="text-slate-700 font-semibold">Message</Label>
+                <Textarea 
+                  {...formik.getFieldProps("message")} 
+                  className="min-h-[160px] bg-white border-slate-200 focus:ring-2 focus:ring-blue-500 rounded-xl resize-none" 
+                  placeholder="Tell us more about your inquiry..." 
+                />
+                {formik.touched.message && formik.errors.message && (
+                  <p className="text-xs text-red-500 font-medium ml-1">{formik.errors.message}</p>
+                )}
+              </div>
+
+              <Button 
+                type="submit" 
+                disabled={formik.isSubmitting}
+                className="w-full h-16 bg-[#0052ff] hover:bg-blue-700 text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
+              >
+                {formik.isSubmitting ? "Sending..." : "Send Message"} 
+                <Send className="ml-2 w-5 h-5" />
               </Button>
             </form>
 
-            <div className="pt-6 border-t border-slate-100 flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-slate-500">
-                <CheckCircle2 className="w-4 h-4 text-green-500" />
-                <span className="text-xs font-semibold">Average response time: 2 hours</span>
+            <div className="pt-8 mt-8 border-t border-slate-200 flex flex-col gap-4">
+              <div className="flex items-center gap-3 text-slate-600">
+                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-green-600" />
+                </div>
+                <span className="text-sm font-medium">Average response time: 2 hours</span>
               </div>
-              <div className="flex items-center gap-2 text-slate-500">
-                <ShieldCheck className="w-4 h-4 text-blue-500" />
-                <span className="text-xs font-semibold">End-to-end encrypted communication</span>
+              <div className="flex items-center gap-3 text-slate-600">
+                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4 text-blue-600" />
+                </div>
+                <span className="text-sm font-medium">End-to-end encrypted communication</span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </main>
     </div>
   );
