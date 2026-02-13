@@ -5,8 +5,12 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from users.models import ClickLog, User
 from users.serializers import SignupSerializer, LoginSerializer, UserDetailSerializer
+from django.db.models.functions import TruncDay
 from django.shortcuts import get_object_or_404
-from django.db.models import F
+from django.db.models import F, Count
+import logging
+
+logger = logging.getLogger(__name__)
 
 class UserSignupView(CreateAPIView):
     serializer_class = SignupSerializer
@@ -80,20 +84,24 @@ class ReferralStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        stats = (
-            ClickLog.objects.filter(referrer=request.user)
-            .annotate(date=TruncDay('clicked_at'))
-            .values('date')
-            .annotate(clicks=Count('id'))
-            .order_by('date')
-        )
-        
-        formatted_stats = [
-            {
-                "date": item['date'].strftime('%Y-%m-%d'),
-                "clicks": item['clicks']
-            } 
-            for item in stats
-        ]
-        
-        return Response(formatted_stats)
+        try:
+            stats = (
+                ClickLog.objects.filter(referrer=request.user)
+                .annotate(date=TruncDay('clicked_at'))
+                .values('date')
+                .annotate(clicks=Count('id'))
+                .order_by('date')
+            )
+            
+            formatted_data = [
+                {
+                    "date": item['date'].strftime('%Y-%m-%d') if item['date'] else "Unknown",
+                    "clicks": item['clicks']
+                } 
+                for item in stats
+            ]
+            
+            return Response(formatted_data)
+        except Exception as e:
+            print(f"Stats Error: {e}")
+            return Response({"error": str(e)}, status=500)

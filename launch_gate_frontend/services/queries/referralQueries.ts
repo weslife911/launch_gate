@@ -18,9 +18,7 @@ export const useReferralChartQuery = () => {
     const { fetchChartData } = useReferralStore();
     return useQuery({
         queryKey: ["referral-chart"],
-        queryFn: async () => {
-            await fetchChartData();
-            return true;
-        },
+        queryFn: () => fetchChartData(),
+        staleTime: 1000 * 60 * 5,
     });
 };

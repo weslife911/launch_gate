@@ -1,7 +1,7 @@
 "use client"
 
 import { useReferralStore } from "@/store/useReferralStore";
-import { TrackClickReturnType } from "@/types/referral/referralTypess";
+import { TrackClickReturnType } from "@/types/referral/referralTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 

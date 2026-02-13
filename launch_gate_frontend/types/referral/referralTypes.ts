@@ -11,14 +11,18 @@ export type TrackClickReturnType = {
     message?: string;
 }
 
+export type referalReturnType = {
+    date: string,
+    clicks: number
+}
+
 export type useReferralStoreType = {
     referralCount: number;
     clickLogs: ClickLogType[];
-    isLoading: boolean;
     fetchReferralData: () => Promise<void>;
     trackClick: (username: string) => Promise<TrackClickReturnType>;
     chartData: DailyStatsType[];
-    fetchChartData: () => Promise<void>;
+    fetchChartData: () => Promise<referalReturnType[]>;
 }
 
 export type DailyStatsType = {
