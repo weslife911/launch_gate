@@ -104,18 +104,9 @@ export default function ReferralsPage() {
                 className="h-12 border-slate-200 font-bold text-slate-700 hover:bg-slate-50 rounded-xl"
               >
                 <Share2 className="mr-2 h-4 w-4" />
-                Share Any App
+                Share
               </Button>
 
-              {/* Specific WhatsApp Button */}
-              <Button
-                variant="outline"
-                onClick={() => handleShare('whatsapp')}
-                className="h-12 border-slate-200 font-bold text-slate-700 hover:bg-green-50 rounded-xl"
-              >
-                <span className="mr-2">📲</span>
-                WhatsApp
-              </Button>
 
               {/* QR Code Toggle */}
               <Button
