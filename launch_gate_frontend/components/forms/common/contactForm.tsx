@@ -165,8 +165,10 @@ export default function ContactForm() {
                 disabled={formik.isSubmitting || contactMutation.isPending}
                 className="w-full h-16 bg-[#0052ff] hover:bg-blue-700 text-white text-lg font-bold rounded-2xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
               >
-                {formik.isSubmitting ? <Spinner/> : "Send Message"} 
+                {formik.isSubmitting || contactMutation.isPending ? <Spinner/> : <>
+                Send Message
                 <Send className="ml-2 w-5 h-5" />
+                </>} 
               </Button>
             </form>
 

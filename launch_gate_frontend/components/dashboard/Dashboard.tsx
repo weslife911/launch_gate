@@ -3,7 +3,6 @@
 import { Users, MessageCircle, TrendingUp, Copy, Rocket } from "lucide-react";
 import { MetricCard } from "./MetricCard";
 import { GrowthChart } from "./GrowthChart";
-import { RecentActivityTable } from "./RecentActivityTable";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useReferralStore } from "@/store/useReferralStore";
 import { Button } from "@/components/ui/button";
@@ -13,11 +12,13 @@ import { useReferralDataQuery } from "@/services/queries/referralQueries";
 const Dashboard = () => {
   const { user } = useAuthStore();
   const { referralCount } = useReferralStore();
-  
+
   // Use v5 isPending
   const { isPending } = useReferralDataQuery();
 
-  const referralLink = `https://launch-gate.vercel.app/join/${user?.username || "ambassador"}`;
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PROD_BASE_URL;
+
+  const referralLink = `${baseUrl}/join/${user?.username || "ambassador"}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -75,9 +76,6 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2">
           <GrowthChart title="Traffic Analysis" />
-        </div>
-        <div className="xl:col-span-1">
-          <RecentActivityTable />
         </div>
       </div>
     </div>

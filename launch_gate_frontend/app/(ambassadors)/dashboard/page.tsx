@@ -1,12 +1,12 @@
 "use client";
 
-import { 
-  Download, 
-  Calendar as CalendarIcon, 
-  Copy, 
-  Users, 
-  MessageCircle, 
-  TrendingUp, 
+import {
+  Download,
+  Calendar as CalendarIcon,
+  Copy,
+  Users,
+  MessageCircle,
+  TrendingUp,
   Rocket,
   CheckCircle2
 } from "lucide-react";
@@ -21,7 +21,7 @@ import { toast } from "sonner";
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const { referralCount, chartData } = useReferralStore();
-  
+
   // Trigger queries to ensure data is fresh in the store
   const referralData = useReferralDataQuery();
   const chartQuery = useReferralChartQuery();
@@ -32,7 +32,9 @@ export default function DashboardPage() {
     year: 'numeric'
   });
 
-  const referralLink = `https://launch-gate.vercel.app/join/${user?.username || "ambassador"}`;
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PROD_BASE_URL;
+
+  const referralLink = `${baseUrl}/join/${user?.username || "ambassador"}`;
 
   // --- DOWNLOAD CSV LOGIC ---
   const handleExport = () => {
@@ -46,22 +48,22 @@ export default function DashboardPage() {
     try {
       // 1. Define CSV Headers
       const headers = ["Date", "Clicks"];
-      
+
       // 2. Map data to CSV rows
       const rows = chartData.map(item => `${item.date},${item.clicks}`);
-      
+
       // 3. Combine headers and rows
       const csvContent = [headers.join(","), ...rows].join("\n");
-      
+
       // 4. Create a blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      
+
       link.setAttribute("href", url);
       link.setAttribute("download", `${user?.full_name}_referral_stats_${new Date().toISOString().split('T')[0]}.csv`);
       link.style.visibility = "hidden";
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -99,24 +101,24 @@ export default function DashboardPage() {
               {currentDate}
             </div>
             <div className="text-xs font-mono text-[#0052ff] bg-blue-500/10 px-2 py-1 rounded-md font-bold border border-blue-500/20">
-               USER: {user?.username}
+              USER: {user?.username}
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <Button 
+          <Button
             onClick={copyLink}
             className="bg-[#0052ff] hover:bg-[#0041cc] text-white shadow-lg shadow-blue-500/20 transition-all active:scale-95"
           >
             <Copy className="w-4 h-4 mr-2" />
             Copy Referral Link
           </Button>
-          
+
           {/* UPDATED DOWNLOAD BUTTON */}
-          <Button 
-            variant="outline" 
-            size="icon" 
+          <Button
+            variant="outline"
+            size="icon"
             onClick={handleExport}
             title="Download Report (CSV)"
             className="hidden sm:flex border-border bg-card text-muted-foreground hover:text-[#0052ff] hover:border-[#0052ff] transition-colors"
@@ -138,7 +140,7 @@ export default function DashboardPage() {
         />
         <MetricCard
           title="Hub Interactions"
-          value={chartData?.reduce((acc, curr) => acc + curr.clicks, 0) || 0} 
+          value={chartData?.reduce((acc, curr) => acc + curr.clicks, 0) || 0}
           isLoading={chartQuery.isPending}
           icon={MessageCircle}
           trend={8.2}
@@ -162,14 +164,14 @@ export default function DashboardPage() {
         <div className="xl:col-span-2 h-112.5">
           <GrowthChart title="Traffic Analysis" />
         </div>
-        
+
         <div className="xl:col-span-1 bg-card/50 border border-border rounded-xl p-6 flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-8 h-8 text-[#0052ff]" />
-            </div>
-            <Button variant="link" className="text-[#0052ff]">
-                View Insights
-            </Button>
+          <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center">
+            <TrendingUp className="w-8 h-8 text-[#0052ff]" />
+          </div>
+          <Button variant="link" className="text-[#0052ff]">
+            View Insights
+          </Button>
         </div>
       </div>
     </div>
