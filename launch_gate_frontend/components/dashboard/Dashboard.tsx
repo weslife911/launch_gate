@@ -18,7 +18,7 @@ const Dashboard = () => {
 
   const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PROD_BASE_URL;
 
-  const referralLink = `${baseUrl}/join/${user?.username || "ambassador"}`;
+  const referralLink = `${baseUrl}/join/${user?.username}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(referralLink);
