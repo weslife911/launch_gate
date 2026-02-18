@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  Rocket, 
-  Menu, 
-  X, 
-  User, 
-  LogOut, 
-  LayoutDashboard, 
+import {
+  Rocket,
+  Menu,
+  X,
+  User,
+  LogOut,
+  LayoutDashboard,
   MessageSquare,
   ChevronDown
 } from "lucide-react";
@@ -51,18 +51,18 @@ export default function Navbar() {
 
   const handleLogout = async () => {
 
-        // 2. Clear local store and token
-        await logoutMutation.mutate(null, {
-            onSuccess: () => {
-                router.push("/");
-            }
-        });
-    }
+    // 2. Clear local store and token
+    await logoutMutation.mutate(null, {
+      onSuccess: () => {
+        router.push("/");
+      }
+    });
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-        
+
         {/* Logo Section */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 bg-[#0052ff] rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -79,8 +79,8 @@ export default function Navbar() {
               href={link.href}
               className={cn(
                 "text-sm font-semibold transition-colors",
-                pathname === link.href 
-                  ? "text-[#0052ff]" 
+                pathname === link.href
+                  ? "text-[#0052ff]"
                   : "text-slate-500 hover:text-slate-900"
               )}
             >
@@ -132,7 +132,7 @@ export default function Navbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="text-red-600 focus:text-red-600 cursor-pointer py-2"
                   onClick={handleLogout}
                 >
@@ -145,7 +145,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="md:hidden p-2 text-slate-600"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
@@ -177,8 +177,8 @@ export default function Navbar() {
                 </Link>
               </>
             ) : (
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 className="w-full h-12"
                 onClick={handleLogout}
               >

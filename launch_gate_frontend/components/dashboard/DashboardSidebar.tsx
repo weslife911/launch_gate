@@ -2,11 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Users, MessageCircle, Rocket, LogOut, ExternalLink } from "lucide-react";
-import { 
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, 
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, 
-  SidebarFooter 
+import { LayoutDashboard, Users, LogOut, User } from "lucide-react";
+import {
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader,
+  SidebarFooter
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/useAuthStore";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ import { toast } from "sonner";
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Referrals", url: "/dashboard/referrals", icon: Users },
+  { title: "Profile", url: "/dashboard/profile", icon: User }
 ];
 
 export function DashboardSidebar() {
@@ -30,14 +31,15 @@ export function DashboardSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border bg-card">
+    // "side" prop ensures it knows where to slide from on mobile
+    <Sidebar side="left" collapsible="icon" className="border-r border-border bg-card">
       <SidebarHeader className="p-4 border-b border-border">
         <div className="font-bold text-[#0052ff] flex items-center gap-2">
           <div className="w-8 h-8 bg-[#0052ff] rounded flex items-center justify-center text-white">LG</div>
           <span className="truncate group-data-[collapsible=icon]:hidden">LaunchGate</span>
         </div>
       </SidebarHeader>
-      
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -57,10 +59,13 @@ export function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-border">
+      <SidebarFooter className="p-2 border-t border-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout} className="text-destructive hover:bg-destructive/10">
+            <SidebarMenuButton
+              onClick={handleLogout}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors"
+            >
               <LogOut className="h-4 w-4" />
               <span>Sign Out</span>
             </SidebarMenuButton>
