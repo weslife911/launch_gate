@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from users import views
 from referral.views import TrackReferralClickView, ReferralStatsView
 from contact.views import ContactRelayView
 
@@ -10,4 +10,5 @@ urlpatterns = [
     path('track-click/<str:username>/', TrackReferralClickView.as_view()),
     path('stats/', ReferralStatsView.as_view(), name='referral-stats'),
     path("contact/", ContactRelayView.as_view(), name="contact"),
+    path('profile/update/', views.ProfileUpdateView.as_view(), name='profile_update'),
 ]
