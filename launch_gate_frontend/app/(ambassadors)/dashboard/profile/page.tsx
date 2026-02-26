@@ -83,7 +83,7 @@ export default function ProfilePage() {
                         <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 group relative">
                             <p className="text-xs text-slate-400 font-bold uppercase tracking-tight">Referral Slug</p>
                             <div className="flex items-center justify-between mt-1">
-                                <span className="text-lg font-black text-[#0052ff]">{baseUrl.replace(/\/$/, "")}/join/${user?.username}</span>
+                                <span className="text-lg font-black text-[#0052ff]">{baseUrl.replace(/\/$/, "")}/join/{user?.username}</span>
                                 <Button variant="ghost" size="icon" onClick={copySlug} className="h-8 w-8 text-slate-400 hover:text-[#0052ff]">
                                     <Copy className="h-4 w-4" />
                                 </Button>
