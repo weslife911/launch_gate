@@ -59,7 +59,7 @@ export default function ProfilePage() {
                             </Badge>
                         </div>
                         <p className="text-slate-500 font-medium mt-1 flex items-center gap-1">
-                            <MapPin className="h-4 w-4" /> {user?.region}, {user?.country}
+                            <MapPin className="h-4 w-4" /> {user?.city}, {user?.country}
                         </p>
                     </div>
 
