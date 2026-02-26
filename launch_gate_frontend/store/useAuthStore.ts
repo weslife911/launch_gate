@@ -8,9 +8,8 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
     user: null,
 
     checkAuth: async () => {
-        // Read the token from cookies instead of localStorage
         const token = Cookies.get("access_token");
-        
+
         if (!token) {
             set({ user: null, isAuthenticated: false });
             return { success: false, message: "No session found" };
@@ -37,8 +36,7 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
             if (response.data.success) {
                 const { access, refresh } = response.data.tokens;
 
-                // Set cookies with security attributes
-                Cookies.set("access_token", access, { expires: 1/288, secure: true, sameSite: 'strict' }); // 5 mins
+                Cookies.set("access_token", access, { expires: 1 / 288, secure: true, sameSite: 'strict' }); // 5 mins
                 Cookies.set("refresh_token", refresh, { expires: 50, secure: true, sameSite: 'strict' });
 
                 set({ isAuthenticated: true });
@@ -55,7 +53,7 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
             if (response.data.success) {
                 const { access, refresh } = response.data.tokens;
 
-                Cookies.set("access_token", access, { expires: 1/288, secure: true });
+                Cookies.set("access_token", access, { expires: 1 / 288, secure: true });
                 Cookies.set("refresh_token", refresh, { expires: 50, secure: true });
 
                 set({ isAuthenticated: true });
@@ -67,9 +65,13 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
     },
 
     logoutUser: async () => {
-        // Clear all auth cookies
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         set({ isAuthenticated: false, user: null });
     },
+
+    profileUpdate: async (data) => {
+        const response = await axiosInstance.put("/profile/update/");
+        return response.data;
+    }
 }));

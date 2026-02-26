@@ -4,13 +4,11 @@ import os
 from decouple import config
 import dj_database_url
 
-# Email Configuration
 EMAIL_BACKEND = config("EMAIL_BACKEND")
 EMAIL_HOST = config("EMAIL_HOST")
 EMAIL_PORT = config("EMAIL_PORT")
 EMAIL_USE_TLS = True
 
-# Using decouple to fetch credentials
 EMAIL_HOST_USER = config('ADMIN_EMAIL')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('ADMIN_EMAIL')
@@ -25,7 +23,7 @@ ALLOWED_HOSTS = [".vercel.app", "127.0.0.1", "localhost"]
 AUTH_USER_MODEL = "users.User"
 
 INSTALLED_APPS = [
-    "jazzmin",  # Must stay at the top
+    "jazzmin",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,7 +40,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # MUST BE FIRST
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -55,7 +53,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'launch_gate_backend.urls'
 
-# ADDED THIS: Fixed your TEMPLATES error
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -72,7 +69,6 @@ TEMPLATES = [
     },
 ]
 
-# ADDED THIS: Missing application pointer
 WSGI_APPLICATION = 'launch_gate_backend.wsgi.application'
 
 DATABASES = {
@@ -83,14 +79,13 @@ DATABASES = {
     )
 }
 
-# CONSOLIDATED CORS SETTINGS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
     "https://launch-gate.vercel.app"
 ]
 CORS_ALLOW_CREDENTIALS = True
 
-# REST & JWT CONFIG
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

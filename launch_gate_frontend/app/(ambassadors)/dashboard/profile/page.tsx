@@ -20,7 +20,6 @@ import { toast } from "sonner";
 export default function ProfilePage() {
     const { user } = useAuthStore();
 
-    // Generate clean initials from the full name
     const initials = user?.full_name
         ?.split(" ")
         .map((n) => n[0])
@@ -52,14 +51,14 @@ export default function ProfilePage() {
                     <div className="flex-1 pb-2">
                         <div className="flex flex-wrap items-center gap-3">
                             <h1 className="text-3xl font-black text-slate-900 tracking-tight italic">
-                                {user?.full_name || "Ambassador"}
+                                {user?.full_name} || "Ambassador"
                             </h1>
                             <Badge className="bg-[#0052ff] text-white hover:bg-[#0052ff] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">
                                 Official Ambassador
                             </Badge>
                         </div>
                         <p className="text-slate-500 font-medium mt-1 flex items-center gap-1">
-                            <MapPin className="h-4 w-4" /> Yaoundé, Cameroon
+                            <MapPin className="h-4 w-4" /> {user?.region}, {user?.country}
                         </p>
                     </div>
 
@@ -143,13 +142,6 @@ export default function ProfilePage() {
                                 </div>
                                 <p className="text-slate-700 font-semibold border-b border-slate-100 pb-2">{user?.username}</p>
                             </div>
-                        </div>
-
-                        <div className="mt-8 p-4 bg-yellow-50 rounded-2xl border border-yellow-100 flex gap-3">
-                            <div className="bg-yellow-400 h-2 w-2 rounded-full mt-1.5 shrink-0 animate-pulse"></div>
-                            <p className="text-xs text-yellow-800 font-medium">
-                                Your profile is part of the Launchpad Ecosystem. Please contact an admin if you need to update your primary email or referral slug.
-                            </p>
                         </div>
                     </CardContent>
                 </Card>

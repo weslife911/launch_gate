@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuthStore } from "@/store/useAuthStore"
-import { loginDetailsType, loginReturnType, signupUserDetailsType, signupUserResponseType } from "@/types/auth/authTypes";
+import { loginDetailsType, loginReturnType, profileUpdateDetailsType, signupUserDetailsType, signupUserResponseType } from "@/types/auth/authTypes";
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner";
 
@@ -11,12 +11,12 @@ export const useSignupMutation = () => {
         mutationKey: ["signup-user"],
         mutationFn: (data: signupUserDetailsType) => signupUser(data),
         onError: (data: signupUserResponseType) => {
-            if(!data.success) {
+            if (!data.success) {
                 toast.error(data.message);
             }
         },
         onSuccess: (data: signupUserResponseType) => {
-            if(data.success) {
+            if (data.success) {
                 toast.success("User Signed up successfully");
             }
         },
@@ -29,12 +29,12 @@ export const useLoginMutation = () => {
         mutationKey: ["slogin-user"],
         mutationFn: (data: loginDetailsType) => loginUser(data),
         onError: (data: loginReturnType) => {
-            if(!data.success) {
+            if (!data.success) {
                 toast.error(data.message);
             }
         },
         onSuccess: (data: loginReturnType) => {
-            if(data.success) {
+            if (data.success) {
                 toast.success("User logged in up successfully");
             }
         },
@@ -49,5 +49,16 @@ export const useLogoutMutation = () => {
         onSuccess: () => {
             toast.success("Logged out successfully");
         },
+    });
+}
+
+export const useUpdateProfileMutation = () => {
+    const { profileUpdate } = useAuthStore();
+    return useMutation({
+        mutationKey: ["profile-update"],
+        mutationFn: (data: profileUpdateDetailsType) => profileUpdate(data),
+        onSuccess: () => {
+            toast.success("Profile updated successfully");
+        }
     });
 }

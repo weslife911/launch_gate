@@ -46,11 +46,26 @@ export type signupUserResponseType = {
     tokens: tokenTypes
 }
 
+export type profileUpdateDetailsType = {
+    full_name: string,
+    phone_number: string,
+    username: string,
+    country: string,
+    region: string,
+    city: string,
+}
+
+export type profileUpdateResponseType = {
+    success: boolean,
+    message: string
+}
+
 export type useAuthStoreType = {
     isAuthenticated: boolean,
     user: checkAuthUserReturnType | null,
     checkAuth: () => Promise<checkAuthUserReturnType>,
     signupUser: (data: signupUserDetailsType) => Promise<signupUserResponseType>,
     loginUser: (data: loginDetailsType) => Promise<loginReturnType>,
-    logoutUser: () => Promise<void>
+    logoutUser: () => Promise<void>,
+    profileUpdate: (data: profileUpdateDetailsType) => Promise<profileUpdateResponseType>
 }

@@ -55,13 +55,12 @@ class ProfileUpdateView(UpdateAPIView):
     serializer_class = UserUpdateSerializer
 
     def get_object(self):
-        # Always return the current logged-in user
         return self.request.user
 
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', True) # Enable PATCH by default
+        partial = kwargs.pop('partial', True)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial, context={'request': request})
         
         if serializer.is_valid():
             self.perform_update(serializer)
@@ -74,4 +73,4 @@ class ProfileUpdateView(UpdateAPIView):
         return Response({
             "success": False, 
             "message": serializer.errors
-        })
+        }, status=400)

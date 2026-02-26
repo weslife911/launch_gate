@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import TanstackQueryProvider from "@/providers/tanstackQueryProvider";
 import LoadingProvider from "@/providers/loadingProvider";
-import Navbar from "@/components/common/Navbar";
 import { Toaster } from "sonner";
 import VisibleDashbardProvider from "@/providers/visibleDashbardProvider";
 
@@ -19,8 +18,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-
 
   return (
     <html lang="en" className="scroll-smooth">
