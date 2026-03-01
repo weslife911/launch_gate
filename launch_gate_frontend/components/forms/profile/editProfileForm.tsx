@@ -1,10 +1,8 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Badge, Fingerprint, Globe, Info, Mail, Phone, Save, User } from "lucide-react";
+import { Badge, Fingerprint, Globe, Info, Mail, Phone, Save, User, Lock } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -14,7 +12,6 @@ export default function EditProfileForm() {
 
   const [formData, setFormData] = useState({
     full_name: user?.full_name || "",
-    username: user?.username || "",
     phone_number: user?.phone_number || "",
     country: user?.country || "",
     region: user?.region || "",
@@ -24,12 +21,10 @@ export default function EditProfileForm() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
     try {
-      // Simulate API call to Django backend
       await new Promise(resolve => setTimeout(resolve, 1500)); 
-      toast.success("Identity Updated", {
-        description: "Your changes have been synced with the Launchpad ecosystem.",
+      toast.success("Profile Updated", {
+        description: "Your information has been synced successfully.",
       });
     } catch (error: any) {
       toast.error("Update Failed");
@@ -48,20 +43,33 @@ export default function EditProfileForm() {
                 <CardTitle className="text-2xl font-black text-slate-900 italic">
                   Profile <span className="text-[#0052ff]">Configuration</span>
                 </CardTitle>
-                <p className="text-slate-500 text-sm font-medium">Update your digital ambassador footprint.</p>
+                <p className="text-slate-500 text-sm font-medium">Update your ambassador identity.</p>
               </div>
-              <Badge className="bg-blue-100 text-[#0052ff] hover:bg-blue-100 border-none px-4 py-1.5 rounded-full font-bold">
-                Level: Elite
-              </Badge>
             </div>
           </CardHeader>
 
           <CardContent className="p-8 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Username - LOCKED */}
+              <div className="space-y-3 opacity-80">
+                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
+                  Ambassador ID (Locked)
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-3.5 h-5 w-5 text-slate-300" />
+                  <Input 
+                    disabled 
+                    value={user?.username || ""} 
+                    className="pl-12 h-12 bg-slate-100 border-slate-200 rounded-2xl font-black text-slate-400 cursor-not-allowed" 
+                  />
+                </div>
+              </div>
+
+              {/* Full Name - EDITABLE */}
               <div className="space-y-3">
                 <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Full Legal Name</label>
                 <div className="group relative">
-                  <User className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
+                  <User className="absolute left-4 top-3.5 h-5 w-5 text-slate-400 group-focus-within:text-[#0052ff]" />
                   <Input 
                     value={formData.full_name}
                     onChange={(e) => setFormData({...formData, full_name: e.target.value})}
@@ -69,24 +77,12 @@ export default function EditProfileForm() {
                   />
                 </div>
               </div>
-
-              <div className="space-y-3">
-                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-[#0052ff] ml-1">Ambassador Username</label>
-                <div className="group relative">
-                  <Fingerprint className="absolute left-4 top-3.5 h-5 w-5 text-[#0052ff]" />
-                  <Input 
-                    value={formData.username}
-                    onChange={(e) => setFormData({...formData, username: e.target.value})}
-                    className="pl-12 h-12 bg-blue-50/30 border-blue-100 rounded-2xl font-black text-[#0052ff]"
-                  />
-                </div>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
               <div className="space-y-3">
-                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Primary Phone</label>
-                <div className="group relative">
+                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Phone Number</label>
+                <div className="relative">
                   <Phone className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
                   <Input 
                     value={formData.phone_number}
@@ -97,7 +93,7 @@ export default function EditProfileForm() {
               </div>
 
               <div className="space-y-3 opacity-60">
-                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Registered Email (Locked)</label>
+                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Email (Fixed)</label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-3.5 h-5 w-5 text-slate-300" />
                   <Input disabled value={user?.email || ""} className="pl-12 h-12 bg-slate-100 rounded-2xl cursor-not-allowed" />
@@ -106,9 +102,9 @@ export default function EditProfileForm() {
             </div>
 
             <div className="pt-6 border-t border-slate-100">
-               <div className="flex items-center gap-2 mb-6">
-                 <Globe className="h-4 w-4 text-[#0052ff]" />
-                 <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-900">Regional Data</h4>
+               <div className="flex items-center gap-2 mb-6 text-[#0052ff]">
+                 <Globe className="h-4 w-4" />
+                 <h4 className="text-[11px] font-black uppercase tracking-widest">Location Data</h4>
                </div>
                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                  <Input placeholder="Country" value={formData.country} onChange={(e) => setFormData({...formData, country: e.target.value})} className="h-11 bg-slate-50/50 rounded-xl" />
@@ -117,10 +113,10 @@ export default function EditProfileForm() {
                </div>
             </div>
 
-            <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 flex gap-4 items-start">
-              <Info className="h-5 w-5 text-[#0052ff] shrink-0 mt-0.5" />
-              <p className="text-xs text-blue-700 leading-relaxed font-medium">
-                Changing your <strong>Username</strong> will break old referral links. Update your social bios after saving.
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex gap-4 items-start">
+              <Info className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
+              <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                Your <strong>Username</strong> and <strong>Email</strong> cannot be changed once the account is verified to ensure link stability.
               </p>
             </div>
           </CardContent>
@@ -129,7 +125,7 @@ export default function EditProfileForm() {
         <div className="flex items-center justify-end gap-4">
           <Button type="button" variant="ghost" onClick={() => window.history.back()} className="rounded-xl font-bold">Discard</Button>
           <Button type="submit" disabled={loading} className="h-14 px-10 bg-[#0052ff] hover:bg-[#0041cc] text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 active:scale-95 transition-all">
-            {loading ? "Updating..." : <><Save className="mr-2 h-5 w-5" /> Push Changes</>}
+            {loading ? "Saving..." : <><Save className="mr-2 h-5 w-5" /> Push Changes</>}
           </Button>
         </div>
       </form>

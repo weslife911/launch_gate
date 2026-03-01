@@ -11,17 +11,13 @@ interface HubsSelectionClientProps {
 }
 
 export default function HubsSelectionClient({ username }: HubsSelectionClientProps) {
-  // Initialize the mutation from your referral mutations file
   const { mutate: trackClick } = useTrackClickMutation();
 
   const handleJoin = (link: string, title: string) => {
-    // 1. Record the click in the database via the mutation
     trackClick(username);
 
-    // 2. Provide visual feedback and redirect
     toast.success(`Redirecting to ${title}...`);
     
-    // Small delay to ensure the request is initiated before the page focus changes
     setTimeout(() => {
       window.open(link, "_blank");
     }, 100);
@@ -31,7 +27,6 @@ export default function HubsSelectionClient({ username }: HubsSelectionClientPro
     <div className="min-h-screen bg-slate-50 py-20 px-4">
       <div className="max-w-5xl mx-auto space-y-12">
         
-        {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900">
             Choose Your <span className="text-[#0052ff]">LaunchGate Hub</span>
@@ -41,7 +36,6 @@ export default function HubsSelectionClient({ username }: HubsSelectionClientPro
           </p>
         </div>
 
-        {/* Hubs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {WHATSAPP_HUBS.map((hub) => (
             <Card 

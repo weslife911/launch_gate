@@ -35,12 +35,7 @@ class LoginSerializer(serializers.Serializer):
         data["user"] = user
         return data
 
-class UserDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'username', 'full_name', 'phone_number', 'country', 'region', 'city', 'referral_count', 'account_status', 'role', 'date_joined']
 
-class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['full_name', 'phone_number', 'country', 'region', 'city', 'username']
@@ -56,3 +51,19 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['full_name', 'phone_number', 'country', 'region', 'city']
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'username', 'full_name', 'phone_number', 'country', 'region', 'city', 'referral_count', 'account_status', 'role', 'date_joined']
