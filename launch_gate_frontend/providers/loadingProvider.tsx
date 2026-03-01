@@ -4,6 +4,7 @@ import LoadingScreen from "@/components/common/Loader";
 import { useLoginMutation, useLogoutMutation, useSignupMutation, useUpdateProfileMutation } from "@/services/mutations/authMutations";
 import { useCheckAuthQuery } from "@/services/queries/authQueries";
 import { useReferralDataQuery } from "@/services/queries/referralQueries";
+import { useAuthStore } from "@/store/useAuthStore";
 import { ReactNode } from "react";
 
 function LoadingProvider({
@@ -11,6 +12,7 @@ function LoadingProvider({
 }: {
   children: ReactNode;
 }) {
+  const { user } = useAuthStore();
   const checkAuthQuery = useCheckAuthQuery();
   const referralQuery = useReferralDataQuery();
   const logoutMutation = useLogoutMutation();

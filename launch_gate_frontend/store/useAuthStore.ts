@@ -73,5 +73,18 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
     profileUpdate: async (data) => {
         const response = await axiosInstance.put("/profile/update/");
         return response.data;
-    }
+    },
+
+    verifyAmbassador: async (username: string) => {
+        try {
+            const response = await axiosInstance.get(`/verify-user/${username}/`);
+            return response.data;
+        } catch (error: any) {
+            return { 
+                success: false, 
+                found: false, 
+                message: error.response?.data?.message || "Ambassador not found" 
+            };
+        }
+    },
 }));

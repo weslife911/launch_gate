@@ -10,7 +10,6 @@ export const useReferralStore = create<useReferralStoreType>((set) => ({
 
     trackClick: async (username: string): Promise<TrackClickReturnType> => {
         try {
-            // No token needed for tracking public clicks
             const response = await axiosInstance.post(`/track-click/${username}/`);
             return response.data;
         } catch (error) {

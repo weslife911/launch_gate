@@ -5,6 +5,10 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from users.serializers import SignupSerializer, LoginSerializer, UserDetailSerializer, UserUpdateSerializer
 import logging
+from django.contrib.auth import get_user_model
+from rest_framework import status
+
+User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
@@ -74,3 +78,21 @@ class ProfileUpdateView(UpdateAPIView):
             "success": False, 
             "message": serializer.errors
         }, status=400)
+
+class VerifyUserExistenceView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username__iexact=username)
+            
+            return Response({
+                "success": True,
+                "message": "User with the given username does not exist",
+            }, status=status.HTTP_200_OK)
+            
+        except User.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": f"User with username '{username}' was not found."
+            }, status=status.HTTP_404_NOT_FOUND)

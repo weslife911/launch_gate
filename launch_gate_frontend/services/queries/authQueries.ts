@@ -10,3 +10,11 @@ export const useCheckAuthQuery = () => {
         queryFn: () => checkAuth(),
     });
 }
+
+export const useVerifyAmbassadorQuery = (username: string) => {
+    const { verifyAmbassador } = useAuthStore();
+    return useQuery({
+        queryKey: ["verify-ambassador"],
+        queryFn: () => verifyAmbassador(username)
+    });
+}

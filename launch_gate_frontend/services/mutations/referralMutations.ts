@@ -14,7 +14,6 @@ export const useTrackClickMutation = () => {
         mutationFn: (username: string) => trackClick(username),
         onSuccess: (data: TrackClickReturnType) => {
             if (data.success) {
-                // Invalidate auth-related queries to refresh the referral count globally
                 queryClient.invalidateQueries({ queryKey: ["check-auth"] });
             }
         },

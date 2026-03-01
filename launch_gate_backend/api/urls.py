@@ -11,4 +11,5 @@ urlpatterns = [
     path('stats/', ReferralStatsView.as_view(), name='referral-stats'),
     path("contact/", ContactRelayView.as_view(), name="contact"),
     path('profile/update/', views.ProfileUpdateView.as_view(), name='profile_update'),
+    path('verify-user/<str:username>/', views.VerifyUserExistenceView.as_view(), name='verify-user-existence'),
 ]

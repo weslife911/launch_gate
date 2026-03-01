@@ -60,6 +60,11 @@ export type profileUpdateResponseType = {
     message: string
 }
 
+export type verifyAmbassadorResponseType = {
+    success: boolean,
+    message: string
+}
+
 export type useAuthStoreType = {
     isAuthenticated: boolean,
     user: checkAuthUserReturnType | null,
@@ -67,5 +72,6 @@ export type useAuthStoreType = {
     signupUser: (data: signupUserDetailsType) => Promise<signupUserResponseType>,
     loginUser: (data: loginDetailsType) => Promise<loginReturnType>,
     logoutUser: () => Promise<void>,
-    profileUpdate: (data: profileUpdateDetailsType) => Promise<profileUpdateResponseType>
+    profileUpdate: (data: profileUpdateDetailsType) => Promise<profileUpdateResponseType>,
+    verifyAmbassador: (username: string) => Promise<verifyAmbassadorResponseType>
 }
