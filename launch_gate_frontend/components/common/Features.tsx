@@ -1,51 +1,48 @@
+"use client";
+
 import { Link2, GitBranch, Globe } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import TiltCard from "./TiltCard";
 
 const features = [
   {
-    icon: Link2,
     title: "Unique Referral Links",
-    description: "Each Ambassador receives a personalized link to track recruitment numbers automatically."
+    description: "Each Ambassador receives a personalized link to track recruitment numbers automatically.",
+    icon: Link2,
   },
   {
-    icon: GitBranch,
     title: "Automated Hub Routing",
-    description: "Structure member data and route them to sector-specific WhatsApp hubs instantly."
+    description: "Structure member data and route them to sector-specific WhatsApp hubs instantly.",
+    icon: GitBranch,
   },
   {
-    icon: Globe,
     title: "Global Opportunity Scraper",
-    description: "Automated backend script pulling opportunities from official global websites."
-  }
+    description: "Automated backend script pulling opportunities from official global websites.",
+    icon: Globe,
+  },
 ];
 
-const Features = () => {
-  return (
-    <section id="how-it-works" className="py-24 bg-slate-50">
-      <div className="container mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Infrastructure for Growth</h2>
-          <p className="text-slate-500">Replacing manual processes with high-efficiency automation.</p>
-        </div>
 
+
+export default function Features() {
+  return (
+    <section className="py-32 bg-white relative overflow-hidden">
+      <div className="container px-4 mx-auto relative z-10">
+        <motion.div 
+            initial={{ opacity: 0 }} 
+            whileInView={{ opacity: 1 }}
+            className="text-center mb-20"
+        >
+          <h2 className="text-sm font-black text-[#0052ff] uppercase tracking-[0.4em] mb-4">Core Infrastructure</h2>
+          <p className="text-4xl md:text-5xl font-black text-slate-900 italic">BUILT FOR POWER.</p>
+        </motion.div>
+        
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {features.map((f, i) => (
-            <Card key={i} className="border-none shadow-sm hover:shadow-md transition-shadow bg-white">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
-                  <f.icon className="w-6 h-6 text-[#0052ff]" />
-                </div>
-                <CardTitle className="text-xl text-slate-900">{f.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-slate-500 leading-relaxed">{f.description}</p>
-              </CardContent>
-            </Card>
+            <TiltCard key={i} feature={f} index={i} />
           ))}
         </div>
       </div>
     </section>
   );
-};
-
-export default Features;
+}
