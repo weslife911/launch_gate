@@ -16,11 +16,12 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import Link from "next/link";
+import { useRouter } from "next/navigation"
 
 export default function ProfilePage() {
     const { user } = useAuthStore();
     const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_PROD_BASE_URL || "";
+    const router = useRouter();
 
     const initials = user?.full_name
         ?.split(" ")
@@ -64,11 +65,11 @@ export default function ProfilePage() {
                         </p>
                     </div>
 
-                    <Link href="/dashboard/edit-profile">
-                        <Button className="bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl font-bold shadow-sm mb-2">
-                            <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
-                        </Button>
-                    </Link>
+                    <Button onClick={() => {
+                        router.push("/dashboard/profile");
+                    }} className="bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl font-bold shadow-sm mb-2">
+                        <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
+                    </Button>
                 </div>
             </div>
 

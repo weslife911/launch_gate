@@ -22,7 +22,7 @@ ALLOWED_HOSTS = [".vercel.app", "127.0.0.1", "localhost"]
 
 AUTH_USER_MODEL = "users.User"
 
-IS_LOCAL = config("IS_LOCAL", default=False, cast=bool)
+IS_LOCAL_DEV = config("IS_LOCAL", default=False, cast=bool)
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -100,6 +100,11 @@ REST_FRAMEWORK = {
     ),
 }
 
+SESSION_COOKIE_SECURE = not IS_LOCAL_DEV
+CSRF_COOKIE_SECURE = not IS_LOCAL_DEV
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=50),
@@ -110,7 +115,7 @@ SIMPLE_JWT = {
 
     'AUTH_COOKIE': 'access_token',
     'AUTH_COOKIE_REFRESH': 'refresh_token',
-    'AUTH_COOKIE_SECURE': not IS_LOCAL,
+    'AUTH_COOKIE_SECURE': not IS_LOCAL_DEV,
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_SAMESITE': 'Lax',
     'AUTH_COOKIE_PATH': '/',
@@ -125,8 +130,3 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SESSION_COOKIE_SECURE = not IS_LOCAL
-CSRF_COOKIE_SECURE = not IS_LOCAL
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'
