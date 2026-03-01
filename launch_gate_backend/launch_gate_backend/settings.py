@@ -71,6 +71,12 @@ TEMPLATES = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://launch-gate.vercel.app"
+]
+
 WSGI_APPLICATION = 'launch_gate_backend.wsgi.application'
 
 DATABASES = {
