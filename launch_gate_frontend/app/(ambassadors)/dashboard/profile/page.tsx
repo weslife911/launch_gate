@@ -65,8 +65,9 @@ export default function ProfilePage() {
                         </p>
                     </div>
 
+                    {/* FIXED REDIRECTION PATH */}
                     <Button onClick={() => {
-                        router.push("/dashboard/profile");
+                        router.push("/dashboard/profile/edit"); 
                     }} className="bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl font-bold shadow-sm mb-2">
                         <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
                     </Button>
