@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function ProfilePage() {
     const { user } = useAuthStore();
@@ -63,9 +64,11 @@ export default function ProfilePage() {
                         </p>
                     </div>
 
-                    <Button className="bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl font-bold shadow-sm mb-2">
-                        <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
-                    </Button>
+                    <Link href="/edit-profile">
+                        <Button className="bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl font-bold shadow-sm mb-2">
+                            <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
+                        </Button>
+                    </Link>
                 </div>
             </div>
 

@@ -4,10 +4,8 @@ import { useState } from "react";
 import {
   Copy,
   Share2,
-  CheckCircle2,
   QrCode,
   Link as LinkIcon,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/useAuthStore";
