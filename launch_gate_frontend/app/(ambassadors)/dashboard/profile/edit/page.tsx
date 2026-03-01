@@ -1,5 +1,3 @@
-"use client";
-
 import EditProfileForm from "@/components/forms/profile/editProfileForm"
 
 export default function EditProfilePage() {
