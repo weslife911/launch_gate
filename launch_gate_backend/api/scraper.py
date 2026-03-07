@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from opportunity.models import Opportunity
 
 def scrape_opportunity_desk():
-    url = "hhttps://opportunitydesk.org/category/fellowships-and-scholarships/"
+    url = "https://opportunitydesk.org/category/fellowships-and-scholarships/"
     
     # Improved headers to mimic a real browser
     headers = {
