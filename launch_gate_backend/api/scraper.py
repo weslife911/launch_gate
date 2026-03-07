@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from .models import Opportunity
+from opportunity.models import Opportunity
 
 def scrape_opportunity_desk():
     url = "https://opportunitydesk.org/category/scholarships/"
