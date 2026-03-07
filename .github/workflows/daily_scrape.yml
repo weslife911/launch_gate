@@ -1,0 +1,16 @@
+name: Daily Opportunity Scrape
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Scraper Endpoint
+        run: |
+          curl -f -X POST https://launch-gate-backend.vercel.app/api/v1/trigger-scrape/ \
+          -H "Authorization: Bearer ${{ secrets.SCRAPER_TOKEN }}" \
+          -H "Content-Type: application/json"

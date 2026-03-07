@@ -4,7 +4,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
 
-# Health check for Vercel deployment verification
 def health_check(request):
     return JsonResponse({"status": "LaunchGate Backend is Live", "database": "Connected to Supabase"})
 
