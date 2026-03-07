@@ -29,7 +29,6 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useLogoutMutation } from "@/services/mutations/authMutations";
 
 export default function Navbar() {
-  // Replace this with your actual auth state from a hook like useAuth()
   const { isAuthenticated: isLoggedIn } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -41,6 +40,7 @@ export default function Navbar() {
     { name: "How it Works", href: "/#how-it-works", guestOnly: true },
     { name: "Contact", href: "/contact", guestOnly: false },
     { name: "Dashboard", href: "/dashboard", authOnly: true },
+    { name: "Opportunities", href: "/opportunities", guestOnly: false }
   ];
 
   const filteredLinks = navLinks.filter(link => {
@@ -51,7 +51,6 @@ export default function Navbar() {
 
   const handleLogout = async () => {
 
-    // 2. Clear local store and token
     await logoutMutation.mutate(null, {
       onSuccess: () => {
         router.push("/");
@@ -71,7 +70,6 @@ export default function Navbar() {
           <span className="text-xl font-bold text-slate-900 tracking-tight">LaunchGate</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {filteredLinks.map((link) => (
             <Link
@@ -89,7 +87,6 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Auth Actions */}
         <div className="hidden md:flex items-center gap-3">
           {!isLoggedIn ? (
             <>
@@ -144,7 +141,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Toggle */}
         <button
           className="md:hidden p-2 text-slate-600"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -153,7 +149,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-100 p-6 space-y-4 shadow-xl">
           {filteredLinks.map((link) => (
