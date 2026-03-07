@@ -18,7 +18,6 @@ def get_clean_category(slug):
 
 def scrape_opportunity_desk():
     BASE_URL = config('OPPORTUNITY_SCRAPER_URL').rstrip('/')
-    
     category_paths = [
         "category/fellowships-and-scholarships/",
         "category/awards/",
@@ -32,10 +31,7 @@ def scrape_opportunity_desk():
         "category/fellowships/"
     ]
 
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-    }
-    
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
     session = requests.Session()
     session.headers.update(headers)
     total_saved = 0
@@ -52,39 +48,49 @@ def scrape_opportunity_desk():
                 continue
 
             soup = BeautifulSoup(response.text, 'html.parser')
-            articles = soup.find_all('article')
+            
+            links = soup.select('h2.entry-title a')
+            
+            if not links:
+                links = soup.select('.post-title a') or soup.select('h2 a')
 
-            for article in articles:
-                title_tag = article.select_one('h2.entry-title a')
-                if not title_tag:
+            for link_tag in links:
+                link = link_tag.get('href')
+                title = link_tag.get_text(strip=True)
+                
+                if not link or not title:
                     continue
-                
-                link = title_tag['href']
-                
-                img_tag = article.find('img')
-                image_url = None
-                if img_tag:
-                    image_url = img_tag.get('data-src') or img_tag.get('data-lazy-src') or img_tag.get('src')
 
-                desc_tag = article.select_one('.entry-content p, .entry-summary p')
-                description = desc_tag.get_text(strip=True) if desc_tag else ""
+                container = link_tag.find_parent(['article', 'div'])
+                
+                image_url = None
+                if container:
+                    img_tag = container.find('img')
+                    if img_tag:
+                        image_url = img_tag.get('data-src') or img_tag.get('data-lazy-src') or img_tag.get('src')
+
+                description = ""
+                if container:
+                    desc_tag = container.select_one('.entry-content p, .entry-summary p, .post-content p')
+                    if desc_tag:
+                        description = desc_tag.get_text(strip=True)
 
                 Opportunity.objects.update_or_create(
                     link=link,
                     defaults={
-                        'title': title_tag.get_text(strip=True),
-                        'description': description,
+                        'title': title,
+                        'description': description[:500] if description else "",
                         'image_url': image_url,
                         'category': db_category
                     }
                 )
                 total_saved += 1
             
-            time.sleep(0.3)
+            time.sleep(0.2)
 
         except Exception as e:
-            print(f"DEBUG: Error on {url}: {e}")
+            print(f"DEBUG: Error on {url}: {str(e)}")
             continue
 
     print(f"DEBUG: Finished. Processed {total_saved} items.")
-    return total_saved > 0
+    return total_saved
