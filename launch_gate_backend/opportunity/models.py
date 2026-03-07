@@ -6,14 +6,19 @@ class Opportunity(models.Model):
         ('internship', 'Internship'),
         ('fellowship', 'Fellowship'),
         ('contest', 'Contest/Award'),
+        ('other', 'Other'),
     ]
 
     title = models.CharField(max_length=500)
     link = models.URLField(unique=True)
-    thumbnail = models.URLField(null=True, blank=True)
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='scholarship')
-    deadline = models.CharField(max_length=100, null=True, blank=True)
-    date_scraped = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(null=True, blank=True)
+    image_url = models.URLField(null=True, blank=True)
+    category = models.CharField(
+        max_length=20, 
+        choices=CATEGORY_CHOICES, 
+        default='other'
+    )
+    date_scraped = models.DateTimeField(auto_now=True)
 
     def __cl__ (self):
         return self.title
