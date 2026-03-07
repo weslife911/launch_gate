@@ -21,4 +21,11 @@ export interface OpportunityStoreActions {
     resetFilters: () => void;
 }
 
-export type OpportunityStore = OpportunityStoreState & OpportunityStoreActions;
+export interface OpportunityStore {
+    activeCategory: string;
+    searchQuery: string;
+    currentPage: number;
+    setActiveCategory: (cat: string) => void;
+    setSearchQuery: (query: string) => void;
+    setCurrentPage: (page: number) => void;
+}
