@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Scraper Endpoint
+        env:
+          MY_SECRET_TOKEN: ${{ secrets.SCRAPER_TOKEN }}
         run: |
           curl -X POST https://launch-gate-backend.vercel.app/api/v1/trigger-scrape/ \
-          -H "Authorization: Bearer ${{ secrets.SCRAPER_TOKEN }}" \
+          -H "Authorization: Bearer $MY_SECRET_TOKEN" \
           -H "Content-Type: application/json"
