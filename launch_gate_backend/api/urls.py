@@ -3,6 +3,7 @@ from users import views
 from referral.views import TrackReferralClickView, ReferralStatsView
 from contact.views import ContactRelayView
 from api.views import TriggerScrapeView
+from opportunity.views import OpportunityListView
 
 urlpatterns = [
     path("signup/", views.UserSignupView.as_view()),
@@ -14,4 +15,5 @@ urlpatterns = [
     path('profile/update/', views.ProfileUpdateView.as_view(), name='profile_update'),
     path('verify-user/<str:username>/', views.VerifyUserExistenceView.as_view(), name='verify-user-existence'),
     path('trigger-scrape/', TriggerScrapeView.as_view(), name='trigger-scrape'),
+    path('opportunities/', OpportunityListView.as_view(), name='opportunity-list'),
 ]
