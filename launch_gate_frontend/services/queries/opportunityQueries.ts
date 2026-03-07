@@ -1,7 +1,9 @@
+'use client';
+
 import { useOpportunityStore } from '@/store/useOpportunityStore';
 import { Opportunity } from '@/types/opportunities/opportunityTypes';
+import { axiosInstance } from '@/utils/axiosInstance';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_FRONTEND_PROD_BASE_URL as string;
 
@@ -16,7 +18,9 @@ export const useOpportunities = () => {
             if (activeCategory) params.append('category', activeCategory);
             if (searchQuery) params.append('search', searchQuery);
 
-            const { data } = await axios.get<Opportunity[]>(API_BASE_URL, { params });
+            const { data } = await axiosInstance.get<Opportunity[]>('/opportunities/', {
+                params
+            });
             return data;
         },
         placeholderData: (previousData) => previousData,

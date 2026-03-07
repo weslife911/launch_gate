@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Users, LogOut, User } from "lucide-react";
+import { LayoutDashboard, Users, LogOut, User, Earth } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader,
@@ -15,7 +15,8 @@ import { toast } from "sonner";
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Referrals", url: "/dashboard/referrals", icon: Users },
-  { title: "Profile", url: "/dashboard/profile", icon: User }
+  { title: "Profile", url: "/dashboard/profile", icon: User },
+  { title: "Opportunities", url: "/opportunities", icon: Earth }
 ];
 
 export function DashboardSidebar() {

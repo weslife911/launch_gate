@@ -1,14 +1,24 @@
-import { Opportunity } from "@/types/opportunities/opportunityTypes";
+"use client";
 
+import { Opportunity } from "@/types/opportunities/opportunityTypes";
+import Image from 'next/image';
+import { useState } from "react";
 
 export const OpportunityCard = ({ opp }: { opp: Opportunity }) => {
+
+    const [imgSrc, setImgSrc] = useState(opp.image_url || "/images/opportunity_image.jpeg");
+
     return (
         <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:bg-slate-900 dark:border-slate-800">
-            <div className="aspect-video w-full overflow-hidden bg-slate-100">
-                <img
-                    src={opp.image_url || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=400'}
+            <div className="relative h-full w-full overflow-hidden">
+                <Image
+                    src={imgSrc}
                     alt={opp.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    priority
+                    onError={() => setImgSrc("/images/opportunity_image.jpeg")}
                 />
                 <div className="absolute top-3 right-3">
                     <span className="rounded-full bg-blue-600/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
