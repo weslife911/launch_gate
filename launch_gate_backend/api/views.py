@@ -5,16 +5,16 @@ from django.conf import settings
 
 class TriggerScrapeView(APIView):
     authentication_classes = [] 
-    
     permission_classes = [AllowAny]
 
     def post(self, request):
         from .scraper import scrape_opportunity_desk
         
-        provided_token = request.headers.get("Authorization")
-        expected_token = f"Bearer {settings.SCRAPER_TOKEN}"
+        auth_header = request.headers.get("Authorization", "")
+        
+        expected_token = f"Bearer {settings.SCRAPER_TOKEN.strip()}"
 
-        if provided_token != expected_token:
+        if auth_header.strip() != expected_token:
             return Response({"error": "Unauthorized access"}, status=403)
 
         success = scrape_opportunity_desk()
