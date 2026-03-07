@@ -4,12 +4,24 @@ from opportunity.models import Opportunity
 
 def scrape_opportunity_desk():
     url = "https://opportunitydesk.org/category/scholarships/"
-    headers = {"User-Agent": "Mozilla/5.0"}
+    
+    # Improved headers to mimic a real browser
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": "https://www.google.com/",
+    }
     
     try:
         print("DEBUG: Starting scrape for Scholarships...")
         response = requests.get(url, headers=headers, timeout=15)
         
+        # Check for 403 specifically to avoid the 500 crash
+        if response.status_code == 403:
+            print("DEBUG: Access Denied (403). We are being blocked by the host.")
+            return False
+            
         if response.status_code != 200:
             print(f"DEBUG: HTTP Error {response.status_code}")
             return False
