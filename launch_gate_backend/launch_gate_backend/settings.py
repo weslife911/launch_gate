@@ -17,6 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
+SCRAPER_TOKEN = config("SCRAPER_TOKEN")
 
 ALLOWED_HOSTS = [".vercel.app", "127.0.0.1", "localhost"]
 
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
     "users",
     "referral",
     "contact",
+    "opportunity",
     "rest_framework",
     'rest_framework_simplejwt',
     'corsheaders',
