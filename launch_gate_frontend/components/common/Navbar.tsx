@@ -62,7 +62,6 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
 
-        {/* Logo Section */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 bg-[#0052ff] rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
             <Rocket className="w-5 h-5 text-white" />
