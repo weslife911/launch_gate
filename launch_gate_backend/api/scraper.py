@@ -14,8 +14,41 @@ def get_clean_category(slug):
         return 'fellowship'
     if any(word in slug for word in ['award', 'grant', 'competition', 'contest', 'prize']):
         return 'contest'
+    if any(word in slug for word in ['medicine', 'nursing', 'health', 'medical', 'clinical']):
+        return 'health'
+    if any(word in slug for word in ['arts', 'culture', 'writing', 'creative', 'design', 'humanities']):
+        return 'arts'
+    if any(word in slug for word in ['science', 'innovation', 'research', 'technology', 'engineering', 'stem']):
+        return 'science'
+    if any(word in slug for word in ['training', 'conference', 'workshop', 'seminar', 'course']):
+        return 'training'
     
     return 'other'
+
+def scrape_deep_details(session, url):
+    try:
+        response = session.get(url, timeout=12)
+        if response.status_code != 200:
+            return None, None
+            
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        image_url = None
+        img_link = soup.find('link', attrs={'as': 'image', 'imagesrcset': True})
+        if img_link:
+            image_url = img_link['imagesrcset'].split(',')[-1].split(' ')[0]
+
+        content_div = soup.select_one('.entry-content')
+        description = ""
+        if content_div:
+            for tag in content_div(['script', 'style', 'ins', 'div.sharedaddy']):
+                tag.decompose()
+            description = content_div.get_text(separator='\n', strip=True)
+
+        return image_url, description
+    except Exception as e:
+        print(f"DEBUG: Error deep scraping {url}: {str(e)}")
+        return None, None
 
 def scrape_opportunity_desk():
     BASE_URL = config('OPPORTUNITY_SCRAPER_URL').rstrip('/')
@@ -56,11 +89,9 @@ def scrape_opportunity_desk():
             response = session.get(url, timeout=12)
             
             if response.status_code != 200:
-                print(f"DEBUG: Failed to reach {url} (Status: {response.status_code})")
                 continue
 
             soup = BeautifulSoup(response.text, 'html.parser')
-            
             articles = soup.find_all('article')
             
             if not articles:
@@ -77,33 +108,21 @@ def scrape_opportunity_desk():
                 if not link:
                     continue
 
-                img_tag = article.find('img')
-                image_url = None
-                if img_tag:
-                    image_url = (
-                        img_tag.get('data-lazy-src') or 
-                        img_tag.get('data-src') or 
-                        img_tag.get('src')
-                    )
-
-                desc_tag = article.select_one('.entry-content p, .entry-summary p, .post-content p')
-                if desc_tag:
-                    description = desc_tag.get_text(strip=True)
-                else:
-                    description = article.get_text(" ", strip=True)[:200] + "..."
+                deep_image, deep_description = scrape_deep_details(session, link)
 
                 Opportunity.objects.update_or_create(
                     link=link,
                     defaults={
                         'title': title,
-                        'description': description,
-                        'image_url': image_url,
+                        'description': deep_description or "View details on the official page.",
+                        'image_url': deep_image,
                         'category': db_category
                     }
                 )
                 total_saved += 1
+                time.sleep(1) 
             
-            time.sleep(0.5)
+            time.sleep(2)
 
         except Exception as e:
             print(f"DEBUG: Error processing {url}: {str(e)}")
